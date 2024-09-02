@@ -31,8 +31,8 @@ public class SprintEntity
     public async Task AddIssue(Issue issue)
     {
         var newIssue = new IssueEntity(issue);
-        var workLogs = await issue.GetWorklogsAsync();
-        newIssue.SetWorkflows(workLogs.ToArray());
+        //var workLogs = await issue.GetWorklogsAsync();
+        //newIssue.SetWorkflows(workLogs.ToArray());
         AddIssue(newIssue);
     }
 }
