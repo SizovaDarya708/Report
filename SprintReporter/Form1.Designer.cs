@@ -190,7 +190,7 @@
             FileDirectoryName.Name = "FileDirectoryName";
             FileDirectoryName.Size = new Size(199, 23);
             FileDirectoryName.TabIndex = 16;
-            FileDirectoryName.Text = "C:\\Users\\d.sizova\\Desktop";
+            FileDirectoryName.Text = "C:\\";
             FileDirectoryName.TextChanged += textBox3_TextChanged;
             // 
             // label3
