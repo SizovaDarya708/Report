@@ -16,6 +16,8 @@ public class ExcelReportGenerator
     private int PriorityColumn = 7;
     private int EstimateColumn = 8;
     private int StoryPointsColumn = 9;
+    private int DeveloperColumn = 10;
+    private int CountOfReworkColumn = 11;
 
     private string firstListName = "Лист 1";
 
@@ -69,6 +71,13 @@ public class ExcelReportGenerator
                 worksheet.SetValue(currentRow, PriorityColumn, issue.Priority);
                 worksheet.SetValue(currentRow, EstimateColumn, issue.TimeSpentInHours.ToString());
                 worksheet.SetValue(currentRow, StoryPointsColumn, issue.StoryPoints?.ToString());
+
+                var rework = issue.GetReworkInfo();
+                worksheet.SetValue(currentRow, CountOfReworkColumn, rework.CountOfRework);
+
+                var developer = issue.GetParticipantByType(EmployeeType.Developer);
+                worksheet.SetValue(currentRow, DeveloperColumn, developer != null ? developer.Name : string.Empty);
+
                 currentRow++;
             }
         }
@@ -76,7 +85,7 @@ public class ExcelReportGenerator
 
     private void FillDataWithoutSprint(ExcelWorksheet worksheet, SprintReportEntity sprintReportEntity)
     {
-        foreach (var issue in sprintReportEntity.IssuesWithoutSprint)
+        foreach (var issue in sprintReportEntity.WithoutSprintPool.Issues)
         {
             worksheet.SetValue(currentRow, issueNameColumn, issue.Title);
             worksheet.SetValue(currentRow, issueKeyColumn, issue.Key);
@@ -85,7 +94,13 @@ public class ExcelReportGenerator
             worksheet.SetValue(currentRow, typeColumn, issue.Type);
             worksheet.SetValue(currentRow, PriorityColumn, issue.Priority);
             worksheet.SetValue(currentRow, EstimateColumn, issue.TimeSpentInHours.ToString());
-            //worksheet.SetValue(currentRow, StoryPointsColumn, issue.StoryPoints?.ToString());
+
+            var rework = issue.GetReworkInfo();
+            worksheet.SetValue(currentRow, CountOfReworkColumn, rework.CountOfRework);
+
+            var developer = issue.GetParticipantByType(EmployeeType.Developer);
+            worksheet.SetValue(currentRow, DeveloperColumn, developer != null ? developer.Name : string.Empty);
+
             currentRow++;
         }
 
@@ -103,7 +118,7 @@ public class ExcelReportGenerator
         worksheet.SetValue(headerRow, PriorityColumn, "Приоритет");
         worksheet.SetValue(headerRow, EstimateColumn, "Затрачено в часах");
         worksheet.SetValue(headerRow, StoryPointsColumn, "Оценка SP");
+        worksheet.SetValue(headerRow, CountOfReworkColumn, "Количество доработок");
+        worksheet.SetValue(headerRow, DeveloperColumn, "Разработчик");
     }
-
-   
 }

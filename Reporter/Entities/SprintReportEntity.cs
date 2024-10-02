@@ -1,4 +1,5 @@
 ﻿using Atlassian.Jira;
+using Reporter.Extensions;
 
 namespace Reporter.Entities;
 
@@ -6,7 +7,7 @@ public class SprintReportEntity
 {
     public List<SprintEntity> Sprints { get; set; } = new List<SprintEntity>();
 
-    public List<IssueEntity> IssuesWithoutSprint { get; set; } = new List<IssueEntity>();
+    public WithoutSprintPool WithoutSprintPool { get; set; } = new WithoutSprintPool();
 
     public async Task FillDataAsync(Issue[] JiraIssues)
     {
@@ -16,12 +17,12 @@ public class SprintReportEntity
 
             if (sprintName == null)
             {
-                IssuesWithoutSprint.Add(new IssueEntity(issue));
+                await WithoutSprintPool.AddIssue(issue);
                 continue;
             }
 
             TryAddSprint(sprintName, out var sprint);
-            sprint.AddIssue(issue);
+            await sprint!.AddIssue(issue);
         }
     }
 
