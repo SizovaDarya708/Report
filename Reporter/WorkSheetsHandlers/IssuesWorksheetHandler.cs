@@ -1,12 +1,11 @@
-﻿using Atlassian.Jira;
-using OfficeOpenXml;
+﻿using OfficeOpenXml;
 using Reporter.Entities;
 
-namespace Reporter;
+namespace Reporter.WorkSheetsHandlers;
 
-public class IssuesFirstWorkSheetHandler : XlsxExportHandlerBase
+public class IssuesWorksheetHandler : WorksheetExportHandlerBase
 {
-    public IssuesFirstWorkSheetHandler(ExcelPackage excelPackage, string listName, SprintReportEntity sprintReportEntity)
+    public IssuesWorksheetHandler(ExcelPackage excelPackage, string listName, SprintReportEntity sprintReportEntity)
     {
         ListName = listName;
         CurrentExcelPackage = excelPackage;
@@ -34,11 +33,11 @@ public class IssuesFirstWorkSheetHandler : XlsxExportHandlerBase
     private int ResolutionDateColumn = 15;
     private int CreateDateColumn = 16;
     private int UpdateDateColumn = 17;
-    
+
 
     #endregion
 
-    
+
     private SprintReportEntity _sprintReportEntity;
 
     public void FillReportData()
@@ -65,10 +64,10 @@ public class IssuesFirstWorkSheetHandler : XlsxExportHandlerBase
                 CurrentWorksheet.SetValue(currentRow, TimeSpentColumn, issue.TimeSpentInSeconds);
                 CurrentWorksheet.SetValue(currentRow, EstimateTimeColumn, issue.TimeEstimateInSeconds);
                 CurrentWorksheet.SetValue(currentRow, TimeLeftColumn, issue.TimeRemainingInSeconds);
-                CurrentWorksheet.SetValue(currentRow, ResolutionDateColumn, issue.ResolutionDate?.ToString("dd.MM.YY HH:mm"));
+                CurrentWorksheet.SetValue(currentRow, ResolutionDateColumn, issue.ResolutionDate?.ToString("dd.MM.yy HH:mm"));
                 CurrentWorksheet.SetValue(currentRow, ResolutionColumn, issue.Resolution);
-                CurrentWorksheet.SetValue(currentRow, CreateDateColumn, issue.CreateDate?.ToString("dd.MM.YY HH:mm"));
-                CurrentWorksheet.SetValue(currentRow, UpdateDateColumn, issue.UpdateDate?.ToString("dd.MM.YY HH:mm"));
+                CurrentWorksheet.SetValue(currentRow, CreateDateColumn, issue.CreateDate?.ToString("dd.MM.yy HH:mm"));
+                CurrentWorksheet.SetValue(currentRow, UpdateDateColumn, issue.UpdateDate?.ToString("dd.MM.yy HH:mm"));
                 CurrentWorksheet.SetValue(currentRow, StoryPointsColumn, issue.StoryPoints?.ToString());
 
                 var rework = issue.GetReworkInfo();

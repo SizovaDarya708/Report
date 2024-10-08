@@ -30,9 +30,9 @@ public class IssueEntity
 
     public void SetWorkflows(IEnumerable<Worklog> workflows)
     {
-        //var newWorklogs = workflows
-        //    .Select(w => new WorklogEntity(w));
-        //Workflows.AddRange(newWorklogs);
+        var newWorklogs = workflows
+            .Select(w => new WorklogEntity(this, w));
+        Workflows.AddRange(newWorklogs);
     }
 
     public void SetChangeLogs(IEnumerable<IssueChangeLog> issueChaneLogs)

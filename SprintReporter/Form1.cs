@@ -1,5 +1,6 @@
 using JiraInteraction;
 using Reporter;
+using System.Media;
 
 namespace SprintReporter
 {
@@ -62,7 +63,7 @@ namespace SprintReporter
                         FilePath = FileDirectoryName.Text,
                     });
                 await reportTask;
-
+                SystemSounds.Beep.Play();
                 ErrorOutputTextBox.Text = "Печать завершена";
             }
             catch (Exception ex)

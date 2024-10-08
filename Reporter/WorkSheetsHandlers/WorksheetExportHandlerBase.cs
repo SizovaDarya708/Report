@@ -1,8 +1,8 @@
 ﻿using OfficeOpenXml;
 
-namespace Reporter;
+namespace Reporter.WorkSheetsHandlers;
 
-public abstract class XlsxExportHandlerBase
+public abstract class WorksheetExportHandlerBase
 {
     public string ListName { get; set; } = string.Empty;
 

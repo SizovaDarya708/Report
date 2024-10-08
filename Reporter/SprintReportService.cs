@@ -21,11 +21,10 @@ public class SprintReportService : ISprintReportService
     {
         var issues = await _jiraService.GetIssuesForReportAsync(sprintReportDataInput, cancellationToken);
 
-        var reportEntity = new SprintReportEntity();
+        var reportEntity = new SprintReportEntity(sprintReportDataInput.StartDate, sprintReportDataInput.EndDate);
 
         await reportEntity.FillDataAsync(issues);
 
         _excelReportGenerator.GenerateReport(sprintReportDataInput.FilePath, reportEntity);
     }
-
 }

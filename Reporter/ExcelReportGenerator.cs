@@ -1,13 +1,14 @@
 ﻿using OfficeOpenXml;
 using Reporter.Entities;
+using Reporter.WorkSheetsHandlers;
 
 namespace Reporter;
 
 public class ExcelReportGenerator
 {
-    private string firstListName = "Лист 1";
-    private string secondListName = "Лист 2";
-    private string thirdListName = "Лист 3";
+    private string firstListName = "Задачи";
+    private string secondListName = "Списания времени по задачам";
+    private string thirdListName = "Сотрудники";
 
     public void GenerateReport(string filePath, SprintReportEntity sprintReportEntity)
     {
@@ -17,10 +18,17 @@ public class ExcelReportGenerator
 
         using (var package = new ExcelPackage(new FileInfo(reportPath)))
         {
-            IssuesFirstWorkSheetHandler firstListHandler = 
-                new IssuesFirstWorkSheetHandler(package, firstListName, sprintReportEntity);
+            IssuesWorksheetHandler firstListHandler = 
+                new IssuesWorksheetHandler(package, firstListName, sprintReportEntity);
             firstListHandler.FillReportData();
 
+            WorklogsWorksheetHandler secondListHandler =
+                new WorklogsWorksheetHandler(package, secondListName, sprintReportEntity);
+            secondListHandler.FillReportData();
+
+            ParticipantsWorksheetHandler thirdListHandler =
+                new ParticipantsWorksheetHandler(package, thirdListName, sprintReportEntity);
+            thirdListHandler.FillReportData();
 
             package.Save();
         }
