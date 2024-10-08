@@ -24,6 +24,7 @@ public class WorklogsWorksheetHandler : WorksheetExportHandlerBase
     private int TimeSpentInSecondsColumn = 3;
     private int WorklogAuthorDisplayName = 4;
 
+
     #endregion
 
     public void FillReportData()
