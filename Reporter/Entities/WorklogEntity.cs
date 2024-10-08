@@ -6,13 +6,16 @@ public class WorklogEntity
 {
     public WorklogEntity() { }
 
-    public WorklogEntity(Worklog worklog)
+    public WorklogEntity(IssueEntity issue, Worklog worklog)
     {
         Participant = new IssueParticipantEntity(worklog.AuthorUser);
         Comment = worklog.Comment;
         TimeSpendInSeconds = worklog.TimeSpentInSeconds;
         UpdateDate = worklog.UpdateDate;
+        IssueKey = issue.Key;
     }
+
+    public string IssueKey { get; set; }
 
     public string? Status { get; set; }
 

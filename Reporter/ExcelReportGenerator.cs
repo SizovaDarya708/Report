@@ -1,5 +1,6 @@
 ﻿using OfficeOpenXml;
 using Reporter.Entities;
+using Reporter.WorkSheetsHandlers;
 
 namespace Reporter;
 
@@ -17,10 +18,13 @@ public class ExcelReportGenerator
 
         using (var package = new ExcelPackage(new FileInfo(reportPath)))
         {
-            IssuesFirstWorkSheetHandler firstListHandler = 
-                new IssuesFirstWorkSheetHandler(package, firstListName, sprintReportEntity);
+            IssuesWorksheetHandler firstListHandler = 
+                new IssuesWorksheetHandler(package, firstListName, sprintReportEntity);
             firstListHandler.FillReportData();
 
+            WorklogsWorksheetHandler secondListHandler =
+                new WorklogsWorksheetHandler(package, secondListName, sprintReportEntity);
+            secondListHandler.FillReportData();
 
             package.Save();
         }
