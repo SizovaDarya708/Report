@@ -1,5 +1,7 @@
 ﻿using Atlassian.Jira;
 using JiraInteraction.Dtos;
+using RestSharp;
+using System.Text.RegularExpressions;
 
 namespace JiraInteraction;
 
@@ -9,8 +11,8 @@ public class JiraClientService : IJiraService
     {
         var uri = "https://jira.bars.group";
         client = Jira.CreateRestClient(uri, initData.JiraLogin, initData.JiraPassword);
-        
-       
+
+
         client.Issues.MaxIssuesPerRequest = 3000; 
     }
 
@@ -35,5 +37,29 @@ public class JiraClientService : IJiraService
 
         var issues = issuePages.ToArray();
         return issues;
+    }
+
+    public async Task<Dictionary<string, string>> GetUsersDataAsync(string[] userLogins, CancellationToken cancellationToken)
+    {
+        //var userGroup = userLogins.AsParallel().Select(async name => await client.RestClient.RestSharpClient.ExecuteGetAsync(
+        //    new RestRequest($"/rest/api/2/user?username={name}&expand=groups&expand=applicationRoles", Method.GET),
+        //     cancellationToken));
+
+        var dict = new Dictionary<string, string>();
+
+        foreach (var login in userLogins)
+        {
+            var info = await client.RestClient.RestSharpClient.ExecuteGetAsync(
+            new RestRequest($"/rest/api/2/user?username={login}&expand=groups&expand=applicationRoles", Method.GET),
+             cancellationToken);
+            if (info.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var pattern = @"(Отдел_|БО_УНП_-)[\w]{0,25}";
+                Regex rg = new Regex(pattern);
+                var department = rg.Match(info.Content);
+                dict.TryAdd(login, department.Value);
+            }
+        }
+        return dict;
     }
 }

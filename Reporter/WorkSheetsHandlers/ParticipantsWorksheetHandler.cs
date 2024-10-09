@@ -34,15 +34,15 @@ public class ParticipantsWorksheetHandler : WorksheetExportHandlerBase
 
     private void FillData()
     {
-        //var workflows = _sprintReportEntity.GetAllWorklogs();
+        var participants = _sprintReportEntity.IssueParticipants;
 
-        //foreach (var workflow in workflows)
-        //{
-        //    //CurrentWorksheet.SetValue(currentRow, ParticipantNameColumn, );
-        //    //CurrentWorksheet.SetValue(currentRow, ParticipantTypeColumn, );
+        foreach (var participant in participants)
+        {
+            CurrentWorksheet.SetValue(currentRow, ParticipantNameColumn, participant.Name);
+            CurrentWorksheet.SetValue(currentRow, ParticipantTypeColumn, participant.Department.Replace("БО_УНП_-_", "").Replace("_", " "));
 
-        //    currentRow++;
-        //}
+            currentRow++;
+        }
     }
 
     private void FillHeaders()

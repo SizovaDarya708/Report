@@ -18,9 +18,25 @@ public class SprintReportEntity
 
     public WithoutSprintPool WithoutSprintPool { get; set; } = new WithoutSprintPool();
 
-    public List<WorklogEntity> GetAllWorklogs()
+    public List<WorklogEntity> Worklogs { get; set; } = new List<WorklogEntity>();
+
+    public List<IssueParticipantEntity> IssueParticipants { get; set; } = new List<IssueParticipantEntity>();
+
+    public void SetParticipantDepartment(Dictionary<string, string> loginsPerDepartments)
     {
-        var workLogs = new List<WorklogEntity>();
+        foreach (var participant in IssueParticipants)
+        {
+            if (loginsPerDepartments.TryGetValue(participant.UserLogin, out var dep))
+            {
+                participant.Department = dep;
+            }
+        
+        }
+    
+    }
+
+    public void SetWorklogs()
+    {
         var sprintWorkLogs = Sprints
             .SelectMany(x => x.Issues)
             .SelectMany(x => x.Workflows)
@@ -29,9 +45,21 @@ public class SprintReportEntity
             .SelectMany(x => x.Workflows)
             .Where(x => x.UpdateDate >= StartDate && x.UpdateDate <= EndDate);
 
-        workLogs.AddRange(sprintWorkLogs);
-        workLogs.AddRange(withoutSprintIssues);
-        return workLogs;
+        Worklogs.AddRange(sprintWorkLogs);
+        Worklogs.AddRange(withoutSprintIssues);
+    }
+
+    public void SetParticipants()
+    {
+        var sprintParticipants = Sprints
+            .SelectMany(x => x.Issues)
+            .SelectMany(x => x.Participants)
+            .ToList();
+        var withoutSprintParticipants = WithoutSprintPool.Issues
+            .SelectMany(x => x.Participants);
+
+        sprintParticipants.AddRange(withoutSprintParticipants);
+        IssueParticipants = sprintParticipants.DistinctBy(x => x.UserLogin).ToList();
     }
 
     public async Task FillDataAsync(Issue[] JiraIssues)
@@ -49,6 +77,9 @@ public class SprintReportEntity
             TryAddSprint(sprintName, out var sprint);
             await sprint!.AddIssue(issue);
         }
+
+        SetWorklogs();
+        SetParticipants();
     }
 
     public void TryAddSprint(string sprintName, out SprintEntity? sprint)

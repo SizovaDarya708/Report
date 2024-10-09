@@ -14,7 +14,8 @@ public class ExcelReportGenerator
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-        var reportPath = Path.Combine(filePath, "SprintReport.xlsx");
+        var dateString = $"{sprintReportEntity.StartDate.ToString("dd.MM")}-{sprintReportEntity.EndDate.ToString("dd.MM.yy")}";
+        var reportPath = Path.Combine(filePath, $"Отчет спринта({dateString}).xlsx");
 
         using (var package = new ExcelPackage(new FileInfo(reportPath)))
         {

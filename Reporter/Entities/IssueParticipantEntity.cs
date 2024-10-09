@@ -17,4 +17,6 @@ public class IssueParticipantEntity
     public string UserLogin {  get; set; }
 
     public EmployeeType? EmployeeType { get; set; }
+
+    public string Department { get; set; }
 }

@@ -25,6 +25,13 @@ public class SprintReportService : ISprintReportService
 
         await reportEntity.FillDataAsync(issues);
 
+        var userLogins = reportEntity.IssueParticipants
+            .Select(x => x.UserLogin)
+            .Distinct()
+            .ToArray();
+        var departments = await _jiraService.GetUsersDataAsync(userLogins, cancellationToken);
+        reportEntity.SetParticipantDepartment(departments);
+
         _excelReportGenerator.GenerateReport(sprintReportDataInput.FilePath, reportEntity);
     }
 }

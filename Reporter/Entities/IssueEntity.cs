@@ -37,9 +37,9 @@ public class IssueEntity
 
     public void SetChangeLogs(IEnumerable<IssueChangeLog> issueChaneLogs)
     {
-        //var newChangeLogs = issueChaneLogs
-        //    .Select(w => new ChangeLogEntity(w));
-        //ChangeLogs.AddRange(newChangeLogs);
+        var newChangeLogs = issueChaneLogs
+            .Select(w => new ChangeLogEntity(w));
+        ChangeLogs.AddRange(newChangeLogs);
     }
 
     public string Key { get; set; }
@@ -84,14 +84,11 @@ public class IssueEntity
 
     public void SetParticipants()
     {
-        //var statusChangedLogs = ChangeLogs
-        //    .Where(x => x.Items.Any(i => i.FieldName.ToLower() == JiraConstants.Status.ToLower()));
-        ////Найти кто переводил задачку в Оценку - считать этого участника Аналитиком
-        //var analyst = statusChangedLogs
-        //    .Where(x => x.Items.Any(i => i.FromValue?.ToLower() == JiraConstants.Analiz.ToLower() && i.ToValue?.ToLower() == JiraConstants.Estimate.ToLower()))
-        //    .Select(x => x.Author)
-        //    .FirstOrDefault();
-        //SetParticipantsByType(EmployeeType.Analyst, analyst);
+        var participants = Workflows
+            .Select(x => x.Participant)
+            .DistinctBy(x => x.UserLogin);
+
+        Participants.AddRange(participants);
 
         ////Найти кто переводил задачку в Разработку - считать этого участника Разработчиком
         //var developer  = statusChangedLogs

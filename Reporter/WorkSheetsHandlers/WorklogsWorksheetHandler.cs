@@ -36,7 +36,7 @@ public class WorklogsWorksheetHandler : WorksheetExportHandlerBase
 
     private void FillData()
     {
-        var workflows = _sprintReportEntity.GetAllWorklogs();
+        var workflows = _sprintReportEntity.Worklogs;
 
         foreach (var workflow in workflows)
         {
