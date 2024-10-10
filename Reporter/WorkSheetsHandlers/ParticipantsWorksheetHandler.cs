@@ -19,8 +19,9 @@ public class ParticipantsWorksheetHandler : WorksheetExportHandlerBase
     private static int headerRow = 1;
     private int currentRow = 2;
 
-    private int ParticipantNameColumn = 1;
-    private int ParticipantTypeColumn = 2;
+    private int ParticipantLoginColumn = 1;
+    private int ParticipantNameColumn = 2;
+    private int ParticipantTypeColumn = 3;
 
 
     #endregion
@@ -38,6 +39,7 @@ public class ParticipantsWorksheetHandler : WorksheetExportHandlerBase
 
         foreach (var participant in participants)
         {
+            CurrentWorksheet.SetValue(currentRow, ParticipantLoginColumn, participant.UserLogin);
             CurrentWorksheet.SetValue(currentRow, ParticipantNameColumn, participant.Name);
             CurrentWorksheet.SetValue(currentRow, ParticipantTypeColumn, participant.Department.Replace("БО_УНП_-_", "").Replace("_", " "));
 
@@ -48,7 +50,8 @@ public class ParticipantsWorksheetHandler : WorksheetExportHandlerBase
     private void FillHeaders()
     {
         //Заголовки данных
-        CurrentWorksheet.SetValue(headerRow, ParticipantNameColumn, "Сотрудник");
+        CurrentWorksheet.SetValue(headerRow, ParticipantLoginColumn, "Логин сотрудника");
+        CurrentWorksheet.SetValue(headerRow, ParticipantNameColumn, "Cотрудник");
         CurrentWorksheet.SetValue(headerRow, ParticipantTypeColumn, "Отдел");
     }
 }

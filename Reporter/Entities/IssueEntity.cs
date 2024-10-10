@@ -86,6 +86,7 @@ public class IssueEntity
     {
         var participants = Workflows
             .Select(x => x.Participant)
+            .Where(x => x.IsActual == true)
             .DistinctBy(x => x.UserLogin);
 
         Participants.AddRange(participants);

@@ -10,6 +10,7 @@ public class IssueParticipantEntity
     {
         Name = user.DisplayName;
         UserLogin = user.Username;
+        IsActual = user.IsActive;
     }
 
     public string Name { get; set; }
@@ -19,4 +20,6 @@ public class IssueParticipantEntity
     public EmployeeType? EmployeeType { get; set; }
 
     public string Department { get; set; }
+
+    public bool IsActual { get; set; } = true;
 }

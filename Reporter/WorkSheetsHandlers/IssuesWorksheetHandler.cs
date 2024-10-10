@@ -27,12 +27,11 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
     private int TimeLeftColumn = 9;
     private int TimeSpentColumn = 10;
     private int StoryPointsColumn = 11;
-    private int DeveloperColumn = 12;
-    private int CountOfReworkColumn = 13;
-    private int ResolutionColumn = 14;
-    private int ResolutionDateColumn = 15;
-    private int CreateDateColumn = 16;
-    private int UpdateDateColumn = 17;
+    private int CountOfReworkColumn = 12;
+    private int ResolutionColumn = 13;
+    private int ResolutionDateColumn = 14;
+    private int CreateDateColumn = 15;
+    private int UpdateDateColumn = 16;
 
 
     #endregion
@@ -73,9 +72,6 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
                 var rework = issue.GetReworkInfo();
                 CurrentWorksheet.SetValue(currentRow, CountOfReworkColumn, rework.CountOfRework);
 
-                var developer = issue.GetParticipantByType(EmployeeType.Developer);
-                CurrentWorksheet.SetValue(currentRow, DeveloperColumn, developer != null ? developer.Name : string.Empty);
-
                 currentRow++;
             }
         }
@@ -96,9 +92,6 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
             var rework = issue.GetReworkInfo();
             CurrentWorksheet.SetValue(currentRow, CountOfReworkColumn, rework.CountOfRework);
 
-            var developer = issue.GetParticipantByType(EmployeeType.Developer);
-            CurrentWorksheet.SetValue(currentRow, DeveloperColumn, developer != null ? developer.Name : string.Empty);
-
             currentRow++;
         }
 
@@ -117,7 +110,6 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(headerRow, TimeSpentColumn, "Затрачено");
         CurrentWorksheet.SetValue(headerRow, StoryPointsColumn, "Оценка SP");
         CurrentWorksheet.SetValue(headerRow, CountOfReworkColumn, "Количество доработок");
-        CurrentWorksheet.SetValue(headerRow, DeveloperColumn, "Разработчик");
 
         CurrentWorksheet.SetValue(headerRow, EstimateTimeColumn, "Оценка времени");
         CurrentWorksheet.SetValue(headerRow, TimeLeftColumn, "Время по оценке осталось");

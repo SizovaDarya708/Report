@@ -43,7 +43,7 @@ public class WorklogsWorksheetHandler : WorksheetExportHandlerBase
             CurrentWorksheet.SetValue(currentRow, issueKeyColumn, workflow.IssueKey);
             CurrentWorksheet.SetValue(currentRow, TimeSpentInSecondsColumn, workflow.TimeSpendInSeconds);
             CurrentWorksheet.SetValue(currentRow, CreateDateColumn, workflow.UpdateDate?.ToString("dd.MM.yy HH:mm"));
-            CurrentWorksheet.SetValue(currentRow, WorklogAuthorDisplayName, workflow.Participant?.Name);
+            CurrentWorksheet.SetValue(currentRow, WorklogAuthorDisplayName, workflow.Participant?.UserLogin);
 
             currentRow++;
         }
@@ -55,6 +55,6 @@ public class WorklogsWorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(headerRow, issueKeyColumn, "Ключ задачи");
         CurrentWorksheet.SetValue(headerRow, CreateDateColumn, "Дата создания лога");
         CurrentWorksheet.SetValue(headerRow, TimeSpentInSecondsColumn, "Время списанное");
-        CurrentWorksheet.SetValue(headerRow, WorklogAuthorDisplayName, "Автор лога");
+        CurrentWorksheet.SetValue(headerRow, WorklogAuthorDisplayName, "Логин автора лога");
     }
 }
