@@ -12,7 +12,6 @@ public class JiraClientService : IJiraService
         var uri = "https://jira.bars.group";
         client = Jira.CreateRestClient(uri, initData.JiraLogin, initData.JiraPassword);
 
-
         client.Issues.MaxIssuesPerRequest = 3000; 
     }
 
@@ -41,25 +40,27 @@ public class JiraClientService : IJiraService
 
     public async Task<Dictionary<string, string>> GetUsersDataAsync(string[] userLogins, CancellationToken cancellationToken)
     {
-        //var userGroup = userLogins.AsParallel().Select(async name => await client.RestClient.RestSharpClient.ExecuteGetAsync(
-        //    new RestRequest($"/rest/api/2/user?username={name}&expand=groups&expand=applicationRoles", Method.GET),
-        //     cancellationToken));
+        var options = new ParallelOptions()
+        {
+            MaxDegreeOfParallelism = 20
+        };
 
         var dict = new Dictionary<string, string>();
 
-        foreach (var login in userLogins)
+        var pattern = @"(Отдел_|БО_УНП_-)[\w]{0,25}";
+        Regex rg = new Regex(pattern);
+
+        await Parallel.ForEachAsync(userLogins, options, async (login, ct) => 
         {
             var info = await client.RestClient.RestSharpClient.ExecuteGetAsync(
-            new RestRequest($"/rest/api/2/user?username={login}&expand=groups&expand=applicationRoles", Method.GET),
-             cancellationToken);
+            new RestRequest($"/rest/api/2/user?username={login}&expand=groups&expand=applicationRoles", Method.GET), ct);
             if (info.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                var pattern = @"(Отдел_|БО_УНП_-)[\w]{0,25}";
-                Regex rg = new Regex(pattern);
                 var department = rg.Match(info.Content);
                 dict.TryAdd(login, department.Value);
             }
-        }
+        });
+
         return dict;
     }
 }

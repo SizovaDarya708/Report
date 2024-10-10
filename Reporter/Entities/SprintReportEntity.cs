@@ -1,5 +1,6 @@
 ﻿using Atlassian.Jira;
 using Reporter.Extensions;
+using static Microsoft.IO.RecyclableMemoryStreamManager;
 
 namespace Reporter.Entities;
 
@@ -64,19 +65,31 @@ public class SprintReportEntity
 
     public async Task FillDataAsync(Issue[] JiraIssues)
     {
-        foreach (var issue in JiraIssues)
+        await Parallel.ForEachAsync(JiraIssues, async (issue, ct) =>
         {
             var sprintName = issue.GetFieldValue(JiraConstants.SprintField);
 
-            if (sprintName == null)
+            if (sprintName != null)
             {
-                await WithoutSprintPool.AddIssue(issue);
-                continue;
+                TryAddSprint(sprintName, out var sprint);
+                await sprint!.AddIssue(issue);
             }
+            await WithoutSprintPool.AddIssue(issue);
+            
+        });
+        //    foreach (var issue in JiraIssues)
+        //{
+        //    var sprintName = issue.GetFieldValue(JiraConstants.SprintField);
 
-            TryAddSprint(sprintName, out var sprint);
-            await sprint!.AddIssue(issue);
-        }
+        //    if (sprintName == null)
+        //    {
+        //        await WithoutSprintPool.AddIssue(issue);
+        //        continue;
+        //    }
+
+        //    TryAddSprint(sprintName, out var sprint);
+        //    await sprint!.AddIssue(issue);
+        //}
 
         SetWorklogs();
         SetParticipants();
