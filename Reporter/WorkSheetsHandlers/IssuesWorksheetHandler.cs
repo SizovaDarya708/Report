@@ -87,10 +87,13 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
             CurrentWorksheet.SetValue(currentRow, statusColumn, issue.Status);
             CurrentWorksheet.SetValue(currentRow, typeColumn, issue.Type);
             CurrentWorksheet.SetValue(currentRow, PriorityColumn, issue.Priority);
-            CurrentWorksheet.SetValue(currentRow, TimeSpentColumn, issue.TimeSpentInSeconds.ToString());
+            CurrentWorksheet.SetValue(currentRow, TimeSpentColumn, issue.TimeSpentInSeconds);
             CurrentWorksheet.SetValue(currentRow, EstimateTimeColumn, issue.TimeEstimateInSeconds);
             CurrentWorksheet.SetValue(currentRow, TimeLeftColumn, issue.TimeRemainingInSeconds);
             CurrentWorksheet.SetValue(currentRow, ResolutionDateColumn, issue.ResolutionDate?.ToString("dd.MM.yy HH:mm"));
+            CurrentWorksheet.SetValue(currentRow, ResolutionColumn, issue.Resolution);
+            CurrentWorksheet.SetValue(currentRow, CreateDateColumn, issue.CreateDate?.ToString("dd.MM.yy HH:mm"));
+            CurrentWorksheet.SetValue(currentRow, UpdateDateColumn, issue.UpdateDate?.ToString("dd.MM.yy HH:mm"));
 
             var rework = issue.GetReworkInfo();
             CurrentWorksheet.SetValue(currentRow, CountOfReworkColumn, rework.CountOfRework);

@@ -27,6 +27,7 @@ public class SprintReportService : ISprintReportService
 
         //Заполнение данных об Отделах сотрудников (не приходит по API)
         var userLogins = reportEntity.IssueParticipants
+            .Where(x => x.IsActual)
             .Select(x => x.UserLogin)
             .Distinct()
             .ToArray();

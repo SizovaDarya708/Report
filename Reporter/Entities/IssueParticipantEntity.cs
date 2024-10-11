@@ -19,7 +19,7 @@ public class IssueParticipantEntity
 
     public EmployeeType? EmployeeType { get; set; }
 
-    public string Department { get; set; }
+    public string Department { get; set; } = string.Empty;
 
     public bool IsActual { get; set; } = true;
 }

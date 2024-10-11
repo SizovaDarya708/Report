@@ -62,6 +62,10 @@ public class SprintReportEntity
             {
                 participant.Department = dep;
             }
+            else
+            {
+                participant.Department = "Сорудник не активен";
+            }
         }
     }
 
