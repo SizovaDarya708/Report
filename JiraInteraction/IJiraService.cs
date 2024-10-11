@@ -9,5 +9,7 @@ public interface IJiraService
 
     Task<bool> CheckClientConnection(CancellationToken cancellationToken = default);
 
-    Task<Dictionary<string, string>> GetUsersDataAsync(string[] userLogins, CancellationToken cancellationToken);
+    Task<Dictionary<string, string>> GetUsersDepartmentAsync(string[] userLogins, CancellationToken cancellationToken);
+
+    Task<List<EstimateDataDto>> GetEstimateDataPerIssuesAsync(string[] jiraIdentifiers, CancellationToken cancellationToken);
 }

@@ -20,12 +20,15 @@ public class IssueEntity
         TimeSpentInSeconds = issue.TimeTrackingData?.TimeSpentInSeconds;
         LastAssignee = issue.AssigneeUser != null ? new IssueParticipantEntity(issue.AssigneeUser) : null;
 
-        TimeEstimateInSeconds = issue.TimeTrackingData?.OriginalEstimateInSeconds;
-        TimeRemainingInSeconds = issue.TimeTrackingData?.RemainingEstimateInSeconds; 
+        //API не дает корректные данные, проставляется в IssueBase через отдельный запрос
+        //TimeEstimateInSeconds = issue.TimeTrackingData?.OriginalEstimateInSeconds;
+        //TimeRemainingInSeconds = issue.TimeTrackingData?.RemainingEstimateInSeconds; 
         Resolution = issue.Resolution?.Name;
         ResolutionDate = issue.ResolutionDate;
         CreateDate = issue.Created;
         UpdateDate = issue.Updated;
+
+        JiraIdentifier = issue.JiraIdentifier;
     }
 
     public void SetWorkflows(IEnumerable<Worklog> workflows)
@@ -41,6 +44,8 @@ public class IssueEntity
             .Select(w => new ChangeLogEntity(w));
         ChangeLogs.AddRange(newChangeLogs);
     }
+
+    public string JiraIdentifier { get; set; }
 
     public string Key { get; set; }
 

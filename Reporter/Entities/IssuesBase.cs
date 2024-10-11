@@ -1,8 +1,9 @@
 ﻿using Atlassian.Jira;
+using JiraInteraction.Dtos;
 
 namespace Reporter.Entities;
 
-public abstract class IssueAddingBase
+public abstract class IssuesBase
 {
     public virtual async Task AddIssue(Issue issue)
     {
@@ -25,4 +26,18 @@ public abstract class IssueAddingBase
     }
 
     public List<IssueEntity> Issues { get; set; } = new List<IssueEntity>();
+
+    public void SetEstimateData(Dictionary<string, EstimateTime> estimateData)
+    {
+        foreach (var issue in Issues)
+        {
+            if (!estimateData.TryGetValue(issue.JiraIdentifier, out var estimates))
+            {
+                continue;
+            }
+
+            issue.TimeRemainingInSeconds = estimates.RemainingTimeInSeconds;
+            issue.TimeEstimateInSeconds = estimates.EstimateTimeInSeconds;
+        }
+    }   
 }

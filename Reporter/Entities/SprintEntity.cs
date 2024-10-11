@@ -2,7 +2,7 @@
 
 namespace Reporter.Entities;
 
-public class SprintEntity : IssueAddingBase
+public class SprintEntity : IssuesBase
 {
     public SprintEntity() { }
 

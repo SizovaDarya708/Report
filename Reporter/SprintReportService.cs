@@ -25,12 +25,18 @@ public class SprintReportService : ISprintReportService
 
         await reportEntity.FillDataAsync(issues);
 
+        //Заполнение данных об Отделах сотрудников (не приходит по API)
         var userLogins = reportEntity.IssueParticipants
             .Select(x => x.UserLogin)
             .Distinct()
             .ToArray();
-        var departments = await _jiraService.GetUsersDataAsync(userLogins, cancellationToken);
+        var departments = await _jiraService.GetUsersDepartmentAsync(userLogins, cancellationToken);
         reportEntity.SetParticipantDepartment(departments);
+
+        //Получение и заполнение данных о списаниях времени (не приходит по API)
+        var jiraIdentifiers = issues.Select(x => x.JiraIdentifier).ToArray();
+        var estimateDto = await _jiraService.GetEstimateDataPerIssuesAsync(jiraIdentifiers, cancellationToken);
+        reportEntity.SetEstimateTimeData(estimateDto);
 
         _excelReportGenerator.GenerateReport(sprintReportDataInput.FilePath, reportEntity);
     }

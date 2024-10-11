@@ -1,16 +1,33 @@
 ﻿using Atlassian.Jira;
+using JiraInteraction.Dtos;
 using Reporter.Extensions;
-using static Microsoft.IO.RecyclableMemoryStreamManager;
 
 namespace Reporter.Entities;
 
 public class SprintReportEntity
 {
     public SprintReportEntity(DateTime startDate, DateTime endDate)
-    { 
+    {
         StartDate = startDate;
         EndDate = endDate;
     }
+
+    public void SetEstimateTimeData(List<EstimateDataDto> estimateData)
+    {
+        var estimateDict = estimateData
+            .Where(x => x.EstimateTime != null)
+            .GroupBy(x => x.Jiraidentifier)
+            .ToDictionary(x => x.Key, v => v.Select(x => x.EstimateTime).First());
+
+        if (estimateDict == null)
+        {
+            return;
+        }
+
+        WithoutSprintPool.SetEstimateData(estimateDict!);
+        Parallel.ForEach(Sprints, sprint => sprint.SetEstimateData(estimateDict!));
+    }
+
 
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
@@ -23,6 +40,20 @@ public class SprintReportEntity
 
     public List<IssueParticipantEntity> IssueParticipants { get; set; } = new List<IssueParticipantEntity>();
 
+    public List<IssueEntity> GetAllIssues()
+    {
+        var sprintIssues = Sprints.SelectMany(x => x.Issues)
+            .ToList();
+        sprintIssues.AddRange(WithoutSprintPool.Issues);
+        return sprintIssues;
+    }
+
+    //public string[] GetAllIssueJiraIdentifiers()
+    //{
+    //    var issues = GetAllIssues();
+    //    return issues.Select(x => x.JiraIdentifier).ToArray();
+    //}
+
     public void SetParticipantDepartment(Dictionary<string, string> loginsPerDepartments)
     {
         foreach (var participant in IssueParticipants)
@@ -31,9 +62,7 @@ public class SprintReportEntity
             {
                 participant.Department = dep;
             }
-        
         }
-    
     }
 
     public void SetWorklogs()
@@ -73,23 +102,11 @@ public class SprintReportEntity
             {
                 TryAddSprint(sprintName, out var sprint);
                 await sprint!.AddIssue(issue);
+                return;
             }
             await WithoutSprintPool.AddIssue(issue);
             
         });
-        //    foreach (var issue in JiraIssues)
-        //{
-        //    var sprintName = issue.GetFieldValue(JiraConstants.SprintField);
-
-        //    if (sprintName == null)
-        //    {
-        //        await WithoutSprintPool.AddIssue(issue);
-        //        continue;
-        //    }
-
-        //    TryAddSprint(sprintName, out var sprint);
-        //    await sprint!.AddIssue(issue);
-        //}
 
         SetWorklogs();
         SetParticipants();
