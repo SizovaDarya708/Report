@@ -12,8 +12,8 @@ public class SprintIssuesDataInput
     public string GetJql()
     {
         var jql = $"updatedDate >= '{StartDate.ToString("yyyy-MM-dd HH:mm")}' " +
-            $"AND created <= '{EndDate.ToString("yyyy-MM-dd HH:mm")}'";
-        
+            $"AND updatedDate < '{EndDate.AddDays(1).ToString("yyyy-MM-dd HH:mm")}'";
+
         if (!string.IsNullOrEmpty(AdditionalJiraFilter))
         {
             jql += $" AND {AdditionalJiraFilter}";
