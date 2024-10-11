@@ -69,11 +69,9 @@ public class SprintReportEntity
     {
         var sprintWorkLogs = Sprints
             .SelectMany(x => x.Issues)
-            .SelectMany(x => x.Workflows)
-            .Where(x => x.UpdateDate >= StartDate && x.UpdateDate <= EndDate);
+            .SelectMany(x => x.Workflows);
         var withoutSprintIssues = WithoutSprintPool.Issues
-            .SelectMany(x => x.Workflows)
-            .Where(x => x.UpdateDate >= StartDate && x.UpdateDate <= EndDate);
+            .SelectMany(x => x.Workflows);
 
         Worklogs.AddRange(sprintWorkLogs);
         Worklogs.AddRange(withoutSprintIssues);
