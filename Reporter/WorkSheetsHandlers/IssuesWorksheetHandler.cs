@@ -24,7 +24,7 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
     private int typeColumn = 6;
     private int PriorityColumn = 7;
     private int EstimateTimeColumn = 8;
-    private int TimeLeftColumn = 9;
+    //private int TimeLeftColumn = 9;
     private int TimeSpentColumn = 10;
     private int StoryPointsColumn = 11;
     private int CountOfReworkColumn = 12;
@@ -62,7 +62,7 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
                 CurrentWorksheet.SetValue(currentRow, PriorityColumn, issue.Priority);
                 CurrentWorksheet.SetValue(currentRow, TimeSpentColumn, issue.TimeSpentInSeconds);
                 CurrentWorksheet.SetValue(currentRow, EstimateTimeColumn, issue.TimeEstimateInSeconds);
-                CurrentWorksheet.SetValue(currentRow, TimeLeftColumn, issue.TimeRemainingInSeconds);
+                //CurrentWorksheet.SetValue(currentRow, TimeLeftColumn, issue.TimeRemainingInSeconds);
                 CurrentWorksheet.SetValue(currentRow, ResolutionDateColumn, issue.ResolutionDate?.ToString("dd.MM.yy HH:mm"));
                 CurrentWorksheet.SetValue(currentRow, ResolutionColumn, issue.Resolution);
                 CurrentWorksheet.SetValue(currentRow, CreateDateColumn, issue.CreateDate?.ToString("dd.MM.yy HH:mm"));
@@ -89,7 +89,7 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
             CurrentWorksheet.SetValue(currentRow, PriorityColumn, issue.Priority);
             CurrentWorksheet.SetValue(currentRow, TimeSpentColumn, issue.TimeSpentInSeconds);
             CurrentWorksheet.SetValue(currentRow, EstimateTimeColumn, issue.TimeEstimateInSeconds);
-            CurrentWorksheet.SetValue(currentRow, TimeLeftColumn, issue.TimeRemainingInSeconds);
+            //CurrentWorksheet.SetValue(currentRow, TimeLeftColumn, issue.TimeRemainingInSeconds);
             CurrentWorksheet.SetValue(currentRow, ResolutionDateColumn, issue.ResolutionDate?.ToString("dd.MM.yy HH:mm"));
             CurrentWorksheet.SetValue(currentRow, ResolutionColumn, issue.Resolution);
             CurrentWorksheet.SetValue(currentRow, CreateDateColumn, issue.CreateDate?.ToString("dd.MM.yy HH:mm"));
@@ -118,7 +118,7 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(headerRow, CountOfReworkColumn, "Количество доработок");
 
         CurrentWorksheet.SetValue(headerRow, EstimateTimeColumn, "Оценка времени");
-        CurrentWorksheet.SetValue(headerRow, TimeLeftColumn, "Время по оценке осталось");
+       // CurrentWorksheet.SetValue(headerRow, TimeLeftColumn, "Время по оценке осталось");
         CurrentWorksheet.SetValue(headerRow, ResolutionDateColumn, "Резолюция");
         CurrentWorksheet.SetValue(headerRow, ResolutionColumn, "Дата резолюции");
         CurrentWorksheet.SetValue(headerRow, CreateDateColumn, "Дата создания");
