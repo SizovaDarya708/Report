@@ -10,7 +10,8 @@ public class JiraClientService : IJiraService
     public JiraClientService(JiraClientInitData initData)
     {
         var uri = "https://jira.bars.group";
-        client = Jira.CreateRestClient(uri, initData.JiraLogin, initData.JiraPassword);
+        //client = Jira.CreateRestClient(uri, initData.JiraLogin, initData.JiraPassword);
+        client = Jira.CreateRestClient(uri, "zabegaev", "1q2w3eSD");
         client.Issues.MaxIssuesPerRequest = 3000; 
     }
 

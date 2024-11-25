@@ -29,6 +29,8 @@ public class IssueEntity
         UpdateDate = issue.Updated;
 
         JiraIdentifier = issue.JiraIdentifier;
+
+        ReworkDescription = issue.GetFieldValue(JiraConstants.ReworkDescriptionField);
     }
 
     public void SetWorkflows(IEnumerable<Worklog> workflows)
@@ -78,6 +80,8 @@ public class IssueEntity
     public int? StoryPoints { get; set; }
 
     public string? Priority { get; set; }
+
+    public string? ReworkDescription { get; set; }
 
     //Все участники задачи (автор и исполнители)
     public List<IssueParticipantEntity> Participants { get; set; } = new List<IssueParticipantEntity>();

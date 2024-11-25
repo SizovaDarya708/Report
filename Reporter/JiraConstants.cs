@@ -24,5 +24,6 @@ public static class JiraConstants
     #region Наименования полей
     public const string Status = "status";
     public const string TimeSpent = "timespent";
+    public const string ReworkDescriptionField = "";
     #endregion
 }
