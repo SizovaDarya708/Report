@@ -77,6 +77,9 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
     {
         CurrentWorksheet.SetValue(currentRow, issueNameColumn, issue.Title);
         CurrentWorksheet.SetValue(currentRow, issueKeyColumn, issue.Key);
+
+        //Применить гиперссылку для ключа задачи
+        CurrentWorksheet.Cells[currentRow, issueKeyColumn].SetHyperlink(new Uri($"https://jira.bars.group/browse/{issue.Key}"));
         CurrentWorksheet.SetValue(currentRow, lastExecutorColumn, issue.LastAssignee?.Name);
         CurrentWorksheet.SetValue(currentRow, statusColumn, issue.Status);
         CurrentWorksheet.SetValue(currentRow, typeColumn, issue.Type);
@@ -112,8 +115,6 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(headerRow, sprintNameColumn, "Спринт");
         CurrentWorksheet.SetValue(headerRow, issueNameColumn, "Наименование задачи");
         CurrentWorksheet.SetValue(headerRow, issueKeyColumn, "Ключ задачи");
-        //Применить гиперссылку для ключа задачи
-        CurrentWorksheet.Cells[headerRow, issueKeyColumn].SetHyperlink(new Uri($"https://jira.bars.group/browse/{issueKeyColumn}"));
 
         CurrentWorksheet.SetValue(headerRow, lastExecutorColumn, "Последний исполнитель");
         CurrentWorksheet.SetValue(headerRow, statusColumn, "Статус");
