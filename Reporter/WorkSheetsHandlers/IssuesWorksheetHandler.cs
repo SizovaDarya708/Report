@@ -3,6 +3,9 @@ using Reporter.Entities;
 
 namespace Reporter.WorkSheetsHandlers;
 
+/// <summary>
+/// Лист "Задачи"
+/// </summary>
 public class IssuesWorksheetHandler : WorksheetExportHandlerBase
 {
     public IssuesWorksheetHandler(ExcelPackage excelPackage, string listName, SprintReportEntity sprintReportEntity)
@@ -108,7 +111,9 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(headerRow, sprintNameColumn, "Спринт");
         CurrentWorksheet.SetValue(headerRow, issueNameColumn, "Наименование задачи");
         CurrentWorksheet.SetValue(headerRow, issueKeyColumn, "Ключ задачи");
-        //CurrentWorksheet.Column(issueKeyColumn). Применить гиерссылку для ключа задачи
+        //Применить гиперссылку для ключа задачи
+        CurrentWorksheet.Cells[headerRow, issueKeyColumn].SetHyperlink(new Uri($"https://jira.bars.group/browse/{issueKeyColumn}"));
+        
 
         CurrentWorksheet.SetValue(headerRow, lastExecutorColumn, "Последний исполнитель");
         CurrentWorksheet.SetValue(headerRow, statusColumn, "Статус");
