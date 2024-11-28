@@ -27,8 +27,7 @@ public abstract class WorksheetExportHandlerBase
 
     public void FillFormat()
     {
-        var cells = CurrentWorksheet.Cells;
-        cells.AutoFitColumns();
+        CurrentWorksheet.Cells.AutoFitColumns();
     }
 
 }

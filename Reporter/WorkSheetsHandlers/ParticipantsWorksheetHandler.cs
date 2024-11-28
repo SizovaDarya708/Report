@@ -41,7 +41,7 @@ public class ParticipantsWorksheetHandler : WorksheetExportHandlerBase
         {
             CurrentWorksheet.SetValue(currentRow, ParticipantLoginColumn, participant.UserLogin);
             CurrentWorksheet.SetValue(currentRow, ParticipantNameColumn, participant.Name);
-            CurrentWorksheet.SetValue(currentRow, ParticipantTypeColumn, participant.Department?.Replace("БО_УНП_-_", "").Replace("_", " "));
+            CurrentWorksheet.SetValue(currentRow, ParticipantTypeColumn, participant.Department);
 
             currentRow++;
         }

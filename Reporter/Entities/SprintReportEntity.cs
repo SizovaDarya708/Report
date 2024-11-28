@@ -28,6 +28,12 @@ public class SprintReportEntity
         Parallel.ForEach(Sprints, sprint => sprint.SetEstimateData(estimateDict!));
     }
 
+    public SprintEntity? GetSprintByIssueKey(string key)
+    {
+        return Sprints
+            .Where(x => x.Issues.Any(y => y.Key == key))
+            .FirstOrDefault();
+    }
 
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
@@ -39,6 +45,11 @@ public class SprintReportEntity
     public List<WorklogEntity> Worklogs { get; set; } = new List<WorklogEntity>();
 
     public List<IssueParticipantEntity> IssueParticipants { get; set; } = new List<IssueParticipantEntity>();
+
+    public string GetUserDepartmentByLogin(string login)
+    {
+        return IssueParticipants.Where(x => x.UserLogin == login).FirstOrDefault()?.Department ?? string.Empty;
+    }
 
     public List<IssueEntity> GetAllIssues()
     {
@@ -60,7 +71,7 @@ public class SprintReportEntity
         {
             if (loginsPerDepartments.TryGetValue(participant.UserLogin, out var dep))
             {
-                participant.Department = dep;
+                participant.Department = dep.Replace("БО_УНП_-_", "").Replace("_", " ");
             }
             else
             {

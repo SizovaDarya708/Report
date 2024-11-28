@@ -40,6 +40,12 @@ public class IssueEntity
         Workflows.AddRange(newWorklogs);
     }
 
+    public long? GetAllSpentTimeByWorkflows()
+    {
+        var spentTime = Workflows.Select(x => x.TimeSpendInSeconds).Sum();
+        return spentTime;
+    }
+
     public void SetChangeLogs(IEnumerable<IssueChangeLog> issueChaneLogs)
     {
         var newChangeLogs = issueChaneLogs

@@ -1,5 +1,7 @@
 ﻿using OfficeOpenXml;
 using Reporter.Entities;
+using Reporter.Extensions;
+using System.Data.SqlTypes;
 
 namespace Reporter.WorkSheetsHandlers;
 
@@ -62,11 +64,10 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
             foreach (var issue in sprint.Issues)
             {
                 CurrentWorksheet.SetValue(currentRow, sprintNameColumn, sprint.Name);
-                CurrentWorksheet.SetValue(currentRow, SprintStartColumn, sprint.StartDate);
-                CurrentWorksheet.SetValue(currentRow, SprintEndColumn, sprint.EndDate);
+                CurrentWorksheet.Cells[currentRow, SprintStartColumn].SetDateTime(sprint.StartDate);
+                CurrentWorksheet.Cells[currentRow, SprintEndColumn].SetDateTime(sprint.EndDate);
 
                 FillCommonForSprintAndWithoutSprintIssues(issue);
-
 
                 currentRow++;
             }
@@ -84,20 +85,24 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(currentRow, statusColumn, issue.Status);
         CurrentWorksheet.SetValue(currentRow, typeColumn, issue.Type);
         CurrentWorksheet.SetValue(currentRow, PriorityColumn, issue.Priority);
+        CurrentWorksheet.SetValue(currentRow, StoryPointsColumn, issue.StoryPoints);
         CurrentWorksheet.SetValue(currentRow, EstimateTimeColumn, issue.TimeEstimateInSeconds);
-        CurrentWorksheet.SetValue(currentRow, ResolutionDateColumn, issue.ResolutionDate);
+        CurrentWorksheet.Cells[currentRow, ResolutionDateColumn].SetDateTime(issue.ResolutionDate);
         CurrentWorksheet.SetValue(currentRow, ResolutionColumn, issue.Resolution);
-        CurrentWorksheet.SetValue(currentRow, CreateDateColumn, issue.CreateDate);
-        CurrentWorksheet.SetValue(currentRow, UpdateDateColumn, issue.UpdateDate);
+        CurrentWorksheet.Cells[currentRow, CreateDateColumn].SetDateTime(issue.CreateDate);
+        CurrentWorksheet.Cells[currentRow, UpdateDateColumn].SetDateTime(issue.UpdateDate);
 
         var rework = issue.GetReworkInfo();
         CurrentWorksheet.SetValue(currentRow, CountOfReworkColumn, rework.CountOfRework);
 
         CurrentWorksheet.SetValue(currentRow, ReworkDescriptionColumn, issue.ReworkDescription);
 
-        CurrentWorksheet.SetValue(currentRow, SpentTimeDeveloperColumn, "");
-        CurrentWorksheet.SetValue(currentRow, TimeSpentColumn, "");
-        CurrentWorksheet.SetValue(headerRow, DepartmentColumn, "");
+        var developerSpentTime = GetDeveloperSpentTimeByChangeLogs(issue);
+        CurrentWorksheet.SetValue(currentRow, SpentTimeDeveloperColumn, developerSpentTime);
+
+        var allSpentTime = issue.GetAllSpentTimeByWorkflows();
+        CurrentWorksheet.SetValue(currentRow, TimeSpentColumn, allSpentTime);
+        CurrentWorksheet.SetValue(currentRow, DepartmentColumn, "");
     }
 
     private void FillDataWithoutSprint()
@@ -124,8 +129,8 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(headerRow, CountOfReworkColumn, "Количество доработок");
 
         CurrentWorksheet.SetValue(headerRow, EstimateTimeColumn, "Оценка времени");
-        CurrentWorksheet.SetValue(headerRow, ResolutionDateColumn, "Резолюция");
-        CurrentWorksheet.SetValue(headerRow, ResolutionColumn, "Дата резолюции");
+        CurrentWorksheet.SetValue(headerRow, ResolutionColumn, "Резолюция");
+        CurrentWorksheet.SetValue(headerRow, ResolutionDateColumn, "Дата резолюции");
         CurrentWorksheet.SetValue(headerRow, CreateDateColumn, "Дата создания");
         CurrentWorksheet.SetValue(headerRow, UpdateDateColumn, "Дата обновления");
 
@@ -135,5 +140,18 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(headerRow, DepartmentColumn, "Отдел");
         CurrentWorksheet.SetValue(headerRow, SprintStartColumn, "Старт спринта");
         CurrentWorksheet.SetValue(headerRow, SprintEndColumn, "Окончание спринта");
+    }
+
+    private long? GetDeveloperSpentTimeByChangeLogs(IssueEntity issue)
+    {
+        var developers = _sprintReportEntity.IssueParticipants
+            .Where(x => x.Department.ToLower().Contains(JiraConstants.DeveloperDepartmentName))
+            .Select(x => x.UserLogin)
+            .ToList();
+
+        var developersChangeLogsSpentedTime = issue.Workflows
+            .Where(x => developers.Contains(x.Participant.UserLogin))
+            .Select(x => x.TimeSpendInSeconds).Sum();
+        return developersChangeLogsSpentedTime;
     }
 }

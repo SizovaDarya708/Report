@@ -1,5 +1,6 @@
 ﻿using OfficeOpenXml;
 using Reporter.Entities;
+using Reporter.Extensions;
 
 namespace Reporter.WorkSheetsHandlers;
 
@@ -26,7 +27,7 @@ public class WorklogsWorksheetHandler : WorksheetExportHandlerBase
     private int TimeSpentInHoursColumn = 5;
     private int AuthorNameColumn = 6;
     private int Department = 7;
-    private int SprintNameColumn = 8;
+    private int SprintStartDateColumn = 8;
     private int IsCreatedInReportIntervalColumn = 9;
     private int IssueStatusColumn = 10;
     private int IssueNameColumn = 11;
@@ -53,14 +54,20 @@ public class WorklogsWorksheetHandler : WorksheetExportHandlerBase
             CurrentWorksheet.Cells[headerRow, issueKeyColumn].SetHyperlink(new Uri($"https://jira.bars.group/browse/{workflow.IssueKey}"));
 
             CurrentWorksheet.SetValue(currentRow, TimeSpentInSecondsColumn, workflow.TimeSpendInSeconds);
-            CurrentWorksheet.SetValue(currentRow, CreateDateColumn, workflow.UpdateDate);
+            CurrentWorksheet.Cells[currentRow, CreateDateColumn].SetDateTime(workflow.UpdateDate);
             CurrentWorksheet.SetValue(currentRow, AuthorLoginColumn, workflow.Participant?.UserLogin);
 
             CurrentWorksheet.SetValue(currentRow, TimeSpentInHoursColumn, workflow.TimeSpendInSeconds / 60 / 60);
             CurrentWorksheet.SetValue(currentRow, AuthorNameColumn, workflow.Participant?.Name);
-            CurrentWorksheet.SetValue(currentRow, Department, workflow.Participant ?.Department);
-            CurrentWorksheet.SetValue(currentRow, SprintNameColumn, "Спринт");//TODO спринт как-то прокинуть
-            CurrentWorksheet.SetValue(currentRow, IsCreatedInReportIntervalColumn, "");//TODO прокинуть и проверять входит ли лог в интервал выгрузки
+            var userDepartment = _sprintReportEntity.GetUserDepartmentByLogin(workflow.Participant?.UserLogin ?? string.Empty);
+            CurrentWorksheet.SetValue(currentRow, Department, userDepartment);
+
+            var sprintEntity = _sprintReportEntity.GetSprintByIssueKey(workflow.IssueKey);
+            CurrentWorksheet.Cells[currentRow, SprintStartDateColumn].SetDateTime(sprintEntity?.StartDate);
+
+            var isCreatedInReportInterval = workflow.UpdateDate!.Value.Date < _sprintReportEntity.EndDate.Date
+                && workflow.UpdateDate >= _sprintReportEntity.StartDate.Date;
+            CurrentWorksheet.SetValue(currentRow, IsCreatedInReportIntervalColumn, isCreatedInReportInterval);
             CurrentWorksheet.SetValue(currentRow, IssueStatusColumn, workflow.IssueStatus);
             CurrentWorksheet.SetValue(currentRow, IssueNameColumn, workflow.IssueName);
             //CurrentWorksheet.SetValue(currentRow, EstimateColumn, "Оценка");
@@ -80,7 +87,7 @@ public class WorklogsWorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(headerRow, TimeSpentInHoursColumn, "Время списанное в часах");
         CurrentWorksheet.SetValue(headerRow, AuthorNameColumn, "Сотрудник");
         CurrentWorksheet.SetValue(headerRow, Department, "Отдел");
-        CurrentWorksheet.SetValue(headerRow, SprintNameColumn, "Спринт");
+        CurrentWorksheet.SetValue(headerRow, SprintStartDateColumn, "Спринт");
         CurrentWorksheet.SetValue(headerRow, IsCreatedInReportIntervalColumn, "Логи интерисующие нас по промежутку времени (те, что были введены при выгрузке)");
         CurrentWorksheet.SetValue(headerRow, IssueStatusColumn, "Статус задачи");
         CurrentWorksheet.SetValue(headerRow, IssueNameColumn, "Имя задачи");
