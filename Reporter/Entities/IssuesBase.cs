@@ -5,7 +5,7 @@ namespace Reporter.Entities;
 
 public abstract class IssuesBase
 {
-    public virtual async Task AddIssue(Issue issue)
+    public virtual async Task AddIssue(Issue issue, ReportPeriodDto reportPeriod)
     {
         var newIssue = new IssueEntity(issue);
 
@@ -17,11 +17,16 @@ public abstract class IssuesBase
 
         newIssue.SetParticipants();
 
-        AddIssue(newIssue);
+        AddIssue(newIssue, reportPeriod);
     }
 
-    public virtual void AddIssue(IssueEntity issue)
+    private void AddIssue(IssueEntity issue, ReportPeriodDto reportPeriod)
     {
+        if (!issue.IsExistCreatedWorkLogsInReportPeriod(reportPeriod))
+        {
+            return;
+        }
+
         Issues.Add(issue);
     }
 

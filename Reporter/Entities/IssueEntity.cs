@@ -33,6 +33,15 @@ public class IssueEntity
         ReworkDescription = issue.GetFieldValue(JiraConstants.ReworkDescriptionField);
     }
 
+    /// <summary>
+    /// Отфильтровать список задач по списаниям времени по задачам
+    /// - отбрасываются задачи, которые менялись в промежутке времени без выполнения каких-либо работ
+    /// </summary>
+    public bool IsExistCreatedWorkLogsInReportPeriod(ReportPeriodDto reportPeriod)
+    {
+        return Workflows.Any(w => w.UpdateDate >= reportPeriod.StartDate && w.UpdateDate < reportPeriod.EndDate);
+    }
+
     public void SetWorkflows(IEnumerable<Worklog> workflows)
     {
         var newWorklogs = workflows

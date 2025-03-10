@@ -65,8 +65,8 @@ public class WorklogsWorksheetHandler : WorksheetExportHandlerBase
             var sprintEntity = _sprintReportEntity.GetSprintByIssueKey(workflow.IssueKey);
             CurrentWorksheet.Cells[currentRow, SprintStartDateColumn].SetDateTime(sprintEntity?.StartDate);
 
-            var isCreatedInReportInterval = workflow.UpdateDate!.Value.Date < _sprintReportEntity.EndDate.Date
-                && workflow.UpdateDate >= _sprintReportEntity.StartDate.Date;
+            var isCreatedInReportInterval = workflow.UpdateDate!.Value.Date < _sprintReportEntity.ReportPeriod.EndDate.Date
+                && workflow.UpdateDate >= _sprintReportEntity.ReportPeriod.StartDate.Date;
             CurrentWorksheet.SetValue(currentRow, IsCreatedInReportIntervalColumn, isCreatedInReportInterval);
             CurrentWorksheet.SetValue(currentRow, IssueStatusColumn, workflow.IssueStatus);
             CurrentWorksheet.SetValue(currentRow, IssueNameColumn, workflow.IssueName);

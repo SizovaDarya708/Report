@@ -8,8 +8,7 @@ public class SprintReportEntity
 {
     public SprintReportEntity(DateTime startDate, DateTime endDate)
     {
-        StartDate = startDate;
-        EndDate = endDate;
+        ReportPeriod = new ReportPeriodDto(startDate, endDate);
     }
 
     public void SetEstimateTimeData(List<EstimateDataDto> estimateData)
@@ -35,8 +34,7 @@ public class SprintReportEntity
             .FirstOrDefault();
     }
 
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
+    public ReportPeriodDto ReportPeriod;
 
     public List<SprintEntity> Sprints { get; set; } = new List<SprintEntity>();
 
@@ -58,12 +56,6 @@ public class SprintReportEntity
         sprintIssues.AddRange(WithoutSprintPool.Issues);
         return sprintIssues;
     }
-
-    //public string[] GetAllIssueJiraIdentifiers()
-    //{
-    //    var issues = GetAllIssues();
-    //    return issues.Select(x => x.JiraIdentifier).ToArray();
-    //}
 
     public void SetParticipantDepartment(Dictionary<string, string> loginsPerDepartments)
     {
@@ -114,11 +106,11 @@ public class SprintReportEntity
             if (sprintName != null)
             {
                 TryAddSprint(sprintName, out var sprint);
-                await sprint!.AddIssue(issue);
+                await sprint!.AddIssue(issue, ReportPeriod);
                 return;
             }
-            await WithoutSprintPool.AddIssue(issue);
-            
+            await WithoutSprintPool.AddIssue(issue, ReportPeriod);
+
         });
 
         SetWorklogs();
