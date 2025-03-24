@@ -39,10 +39,11 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
 
     private int ReworkDescriptionColumn = 15;
     private int SpentTimeDeveloperColumn = 16;
-    private int TimeSpentColumn = 17;
-    private int DepartmentColumn = 18;
-    private int SprintStartColumn = 19;
-    private int SprintEndColumn = 20;
+    private int SpentTimeDeveloperColumnInSprintColumn = 17;
+    private int TimeSpentColumn = 18;
+    private int DepartmentColumn = 19;
+    private int SprintStartColumn = 20;
+    private int SprintEndColumn = 21;
 
     #endregion
 
@@ -100,6 +101,8 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
         var developerSpentTime = GetDeveloperSpentTimeByChangeLogs(issue);
         CurrentWorksheet.SetValue(currentRow, SpentTimeDeveloperColumn, developerSpentTime);
 
+        var developerSpentTimeInSprint = GetDeveloperSpentTimeInReportPeriod(issue);
+        CurrentWorksheet.SetValue(currentRow, SpentTimeDeveloperColumnInSprintColumn, developerSpentTimeInSprint);
         var allSpentTime = issue.GetAllSpentTimeByWorkflows();
         CurrentWorksheet.SetValue(currentRow, TimeSpentColumn, allSpentTime);
         CurrentWorksheet.SetValue(currentRow, DepartmentColumn, "");
@@ -136,6 +139,7 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
 
         CurrentWorksheet.SetValue(headerRow, ReworkDescriptionColumn, "Описание доработки");
         CurrentWorksheet.SetValue(headerRow, SpentTimeDeveloperColumn, "Списано времени (Разработка)");
+        CurrentWorksheet.SetValue(headerRow, SpentTimeDeveloperColumnInSprintColumn, "Списано времени в спринт(Разработка)");
         CurrentWorksheet.SetValue(headerRow, TimeSpentColumn, "Списано времени всего");
         CurrentWorksheet.SetValue(headerRow, DepartmentColumn, "Отдел");
         CurrentWorksheet.SetValue(headerRow, SprintStartColumn, "Старт спринта");
@@ -151,6 +155,21 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
 
         var developersChangeLogsSpentedTime = issue.Workflows
             .Where(x => developers.Contains(x.Participant.UserLogin))
+            .Select(x => x.TimeSpendInSeconds).Sum();
+        return developersChangeLogsSpentedTime;
+    }
+
+    private long? GetDeveloperSpentTimeInReportPeriod(IssueEntity issue)
+    {
+        var developers = _sprintReportEntity.IssueParticipants
+            .Where(x => x.Department.ToLower().Contains(JiraConstants.DeveloperDepartmentName))
+            .Select(x => x.UserLogin)
+            .ToList();
+
+        var developersChangeLogsSpentedTime = issue.Workflows
+            .Where(x => developers.Contains(x.Participant.UserLogin))
+            .Where(x => x.UpdateDate.HasValue && x.UpdateDate > _sprintReportEntity.ReportPeriod.StartDate
+            && x.UpdateDate <= _sprintReportEntity.ReportPeriod.EndDate)
             .Select(x => x.TimeSpendInSeconds).Sum();
         return developersChangeLogsSpentedTime;
     }

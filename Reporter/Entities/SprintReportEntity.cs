@@ -113,6 +113,20 @@ public class SprintReportEntity
 
         });
 
+        //Для деббага
+        //foreach (var issue in JiraIssues)
+        //{
+        //    var sprintName = issue.GetFieldValue(JiraConstants.SprintField);
+
+        //    if (sprintName != null)
+        //    {
+        //        TryAddSprint(sprintName, out var sprint);
+        //        await sprint!.AddIssue(issue, ReportPeriod);
+        //        continue;
+        //    }
+        //    await WithoutSprintPool.AddIssue(issue, ReportPeriod);
+        //}
+
         SetWorklogs();
         SetParticipants();
     }
