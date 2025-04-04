@@ -14,8 +14,8 @@ public class SprintIssuesDataInput
         //Как вытягивать данные по задачам из старых спринтов, которые были обновлены позже спринта
         // если убрать фильтрацию по дате обновления или создания - данных будет слишком много, обработка станет медленной
         //Jira блокирует объемные и частые запросы
-        var jql = $"((updatedDate >= '{StartDate.ToString("yyyy-MM-dd")}' " +
-            $"AND updatedDate < '{EndDate.AddDays(1).ToString("yyyy-MM-dd")}') OR " +
+        var jql = $"((updatedDate >= '{StartDate.AddDays(-3).ToString("yyyy-MM-dd")}' " +
+            $"AND updatedDate < '{EndDate.AddDays(3).ToString("yyyy-MM-dd")}') OR " +
             $"(createdDate >= '{StartDate.AddDays(-7).ToString("yyyy-MM-dd")}' " +
             $"AND createdDate < '{EndDate.AddDays(1).ToString("yyyy-MM-dd")}'))";
 
