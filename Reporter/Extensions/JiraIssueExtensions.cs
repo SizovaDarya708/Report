@@ -7,7 +7,7 @@ public static class JiraIssueExtensions
     public static string? GetFieldValue(this Issue issue, string fieldName)
     {
         var field = issue.CustomFields
-            .FirstOrDefault(x => x.Name.ToLower().Contains(fieldName));
+            .FirstOrDefault(x => x.Name.ToLower().Contains(fieldName.ToLower()));
 
         if (field == null)
         {

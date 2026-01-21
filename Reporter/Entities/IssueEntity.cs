@@ -31,6 +31,9 @@ public class IssueEntity
         JiraIdentifier = issue.JiraIdentifier;
 
         ReworkDescription = issue.GetFieldValue(JiraConstants.ReworkDescriptionField);
+
+        ErrorReason = issue.GetFieldValue(JiraConstants.ErrorReasonField);
+        ErrorType = issue.GetFieldValue(JiraConstants.ErrorTypeField);
     }
 
     /// <summary>
@@ -97,6 +100,16 @@ public class IssueEntity
     public string? Priority { get; set; }
 
     public string? ReworkDescription { get; set; }
+
+    /// <summary>
+    /// Причина ошибки
+    /// </summary>
+    public string? ErrorReason { get; set; }
+
+    /// <summary>
+    /// Тип ошибки
+    /// </summary>
+    public string? ErrorType { get; set; }
 
     //Все участники задачи (автор и исполнители)
     public List<IssueParticipantEntity> Participants { get; set; } = new List<IssueParticipantEntity>();

@@ -9,6 +9,7 @@ public class ExcelReportGenerator
     private string firstListName = "Задачи";
     private string secondListName = "Списания времени по задачам";
     private string thirdListName = "Сотрудники";
+    private string fourthListName = "Ошибки";
 
     public void GenerateReport(string filePath, SprintReportEntity sprintReportEntity)
     {
@@ -30,6 +31,10 @@ public class ExcelReportGenerator
             ParticipantsWorksheetHandler thirdListHandler =
                 new ParticipantsWorksheetHandler(package, thirdListName, sprintReportEntity);
             thirdListHandler.FillReportData();
+
+            ErrorWorksheetHandler fourthListHandler =
+                new ErrorWorksheetHandler(package, fourthListName, sprintReportEntity);
+            fourthListHandler.FillReportData();
 
             package.Save();
         }
