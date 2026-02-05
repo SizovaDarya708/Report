@@ -1,0 +1,9 @@
+# Локальные конфигурационные файлы
+appsettings.local.json
+appsettings.*.json
+appsettings.Development.json
+appsettings.Production.json
+
+# Или для всех локальных вариаций
+appsettings.*.json
+!appsettings.json
