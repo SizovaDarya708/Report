@@ -127,12 +127,16 @@ public class IssueEntity
 
         Participants.AddRange(participants);
 
-        ////Найти кто переводил задачку в Разработку - считать этого участника Разработчиком
-        //var developer  = statusChangedLogs
-        //    .Where(x => x.Items.Any(i => i.FromValue?.ToLower() == JiraConstants.ToWork.ToLower() && i.ToValue?.ToLower() == JiraConstants.Work.ToLower()))
-        //    .Select(x => x.Author)
-        //    .FirstOrDefault();
-        //SetParticipantsByType(EmployeeType.Developer, developer);
+        //Найти кто переводил задачку в Разработку либо того, кто переводил в статус Ревью
+        //- считать этого участника Разработчиком
+        var developer = ChangeLogs
+            .Where(x => x.Items.Any(i => 
+            (i.FromValue?.ToLower() == JiraConstants.ToWork.ToLower() && i.ToValue?.ToLower() == JiraConstants.Work.ToLower()
+            ||
+            i.FromValue?.ToLower() == JiraConstants.Work.ToLower() && i.ToValue?.ToLower() == JiraConstants.Review.ToLower())))
+            .Select(x => x.Author)
+            .FirstOrDefault();
+        SetParticipantsByType(EmployeeType.Developer, developer);
 
         ////Найти кто переводил задачку в оценку качества - считать этого участника Тестировщиком ????
         //var tester = statusChangedLogs

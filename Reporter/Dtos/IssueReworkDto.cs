@@ -9,16 +9,32 @@ public class IssueReworkDto
     public IssueReworkDto(IEnumerable<ChangeLogEntity> changeLogs, IEnumerable<WorklogEntity> workflows)
     {
         //найти changeLog, где есть нужные переводы и возможно рядом в item есть списания
-        //пока по логике такой, что когда переводят в ревью - возможно тогда и списывают (я хз как формируется changeLog)
-        var reworkChangesCount = changeLogs
-            .Where(x => x.Items.Any(i => 
+        //пока по логике такой, что когда переводят в ревью со статуса Доработка
+        //- возможно тогда и списывают (я хз как формируется changeLog)
+        var reworkChanges = changeLogs
+            .Where(x => x.Items.Any(i =>
             i.FieldName.ToLower() == JiraConstants.Status.ToLower()
             && i.FromValue.ToLower() == JiraConstants.Rework.ToLower()
-            && i.ToValue.ToLower() == JiraConstants.Review.ToLower()))
-            .Count();
+            && i.ToValue.ToLower() == JiraConstants.Review.ToLower()));
 
-        CountOfRework = reworkChangesCount;
+
+        //группируем по автору - считаем сколько у автора статусов доработка по задаче
+        ReworksPerParticipant = reworkChanges.Any(c => c.Author != null)
+            ?
+            reworkChanges
+            .Where(c => c.Author != null)
+            .GroupBy(c => c.Author!.Name)
+            .ToDictionary(k => k.First().Author!, v => v.Count())
+            : new Dictionary<IssueParticipantEntity, int>() { };
+
+        CountOfRework = reworkChanges.Count();
     }
+        
+    /// <summary>
+    /// Количество переработок по сотруднику
+    /// </summary>
+    public Dictionary<IssueParticipantEntity, int> ReworksPerParticipant { get; set; } =
+        new Dictionary<IssueParticipantEntity, int>() { };
 
     public long TimeSpendInSeconds { get; set; } = 0;
 

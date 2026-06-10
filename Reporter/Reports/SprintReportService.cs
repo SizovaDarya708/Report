@@ -1,18 +1,19 @@
 ﻿using JiraInteraction;
 using JiraInteraction.Dtos;
 using Reporter.Entities;
+using Reporter.ReportGenerators;
 
 namespace Reporter.Reports;
 
 public class SprintReportService : ISprintReportService
 {
     private IJiraService _jiraService;
-    private ExcelReportGenerator _excelReportGenerator;
+    private ExcelSprintReportGenerator _excelReportGenerator;
 
     public SprintReportService(IJiraService jiraService)
     {
         _jiraService = jiraService;
-        _excelReportGenerator = new ExcelReportGenerator();
+        _excelReportGenerator = new ExcelSprintReportGenerator();
     }
 
     public async Task ExecuteAsync(

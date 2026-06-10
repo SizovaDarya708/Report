@@ -1,5 +1,6 @@
 using JiraInteraction;
 using Reporter;
+using Reporter.Reports;
 using System.Media;
 
 namespace SprintReporter
