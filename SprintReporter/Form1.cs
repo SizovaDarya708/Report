@@ -135,5 +135,50 @@ namespace SprintReporter
         {
 
         }
+
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void button_print_kpi_1(object sender, EventArgs e)
+        {
+            try
+            {
+                ErrorOutputTextBox.Text = string.Empty;
+                if (jiraService == null)
+                {
+                    ErrorOutputTextBox.Text = "Необходима авторизация в Jira";
+                    return;
+                }
+
+                sprintReportService = new SprintReportService(jiraService);
+                var reportTask = sprintReportService.ExecuteAsync(
+                    new JiraInteraction.Dtos.SprintIssuesDataInput
+                    {
+                        StartDate = dateTimeIssuesStartInput.Value,
+                        EndDate = dateTimeIssuesEndInput.Value,
+                        AdditionalJiraFilter = JiraFilterTextInput.Text,
+                        FilePath = FileDirectoryName.Text,
+                    });
+                await reportTask;
+                SystemSounds.Beep.Play();
+                ErrorOutputTextBox.Text = "Печать завершена";
+            }
+            catch (Exception ex)
+            {
+                ErrorOutputTextBox.Text = ex.Message;
+            }
+        }
+
+        private void tabPage2_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

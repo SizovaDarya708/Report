@@ -28,14 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            TabControl Sprint;
+            tabPage1 = new TabPage();
+            PrintReportButton = new Button();
+            label1 = new Label();
+            dateTimeIssuesStartInput = new DateTimePicker();
+            dateTimeIssuesEndInput = new DateTimePicker();
+            tabPage2 = new TabPage();
+            button1 = new Button();
             LoginTextInput = new TextBox();
             PasswordJiraTextInput = new TextBox();
             JiraLoginButton = new Button();
-            PrintReportButton = new Button();
-            dateTimeIssuesStartInput = new DateTimePicker();
-            dateTimeIssuesEndInput = new DateTimePicker();
             JiraFilterTextInput = new TextBox();
-            label1 = new Label();
             label2 = new Label();
             Пароль = new Label();
             jiraloginlabel = new Label();
@@ -46,91 +50,148 @@
             FileExplorerButton = new Button();
             FileDirectoryName = new TextBox();
             label3 = new Label();
+            Sprint = new TabControl();
+            Sprint.SuspendLayout();
+            tabPage1.SuspendLayout();
+            tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
             SuspendLayout();
             // 
-            // LoginTextInput
+            // Sprint
             // 
-            LoginTextInput.Location = new Point(30, 51);
-            LoginTextInput.Name = "LoginTextInput";
-            LoginTextInput.Size = new Size(189, 23);
-            LoginTextInput.TabIndex = 0;
-            LoginTextInput.TextChanged += LoginTextInput_TextChanged;
+            Sprint.Controls.Add(tabPage1);
+            Sprint.Controls.Add(tabPage2);
+            Sprint.Location = new Point(303, 26);
+            Sprint.Name = "Sprint";
+            Sprint.SelectedIndex = 0;
+            Sprint.Size = new Size(599, 204);
+            Sprint.TabIndex = 18;
             // 
-            // PasswordJiraTextInput
+            // tabPage1
             // 
-            PasswordJiraTextInput.Location = new Point(30, 101);
-            PasswordJiraTextInput.Name = "PasswordJiraTextInput";
-            PasswordJiraTextInput.Size = new Size(189, 23);
-            PasswordJiraTextInput.TabIndex = 1;
-            PasswordJiraTextInput.UseSystemPasswordChar = true;
-            // 
-            // JiraLoginButton
-            // 
-            JiraLoginButton.Location = new Point(30, 140);
-            JiraLoginButton.Name = "JiraLoginButton";
-            JiraLoginButton.Size = new Size(189, 23);
-            JiraLoginButton.TabIndex = 2;
-            JiraLoginButton.Text = "Войти в Jira";
-            JiraLoginButton.UseVisualStyleBackColor = true;
-            JiraLoginButton.Click += JiraLoginButton_Click;
+            tabPage1.Controls.Add(PrintReportButton);
+            tabPage1.Location = new Point(4, 29);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(591, 171);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "Отчет по спринту";
+            tabPage1.UseVisualStyleBackColor = true;
+            tabPage1.Click += tabPage1_Click;
             // 
             // PrintReportButton
             // 
-            PrintReportButton.Location = new Point(30, 337);
+            PrintReportButton.Location = new Point(25, 111);
+            PrintReportButton.Margin = new Padding(3, 4, 3, 4);
             PrintReportButton.Name = "PrintReportButton";
-            PrintReportButton.Size = new Size(200, 23);
+            PrintReportButton.Size = new Size(229, 31);
             PrintReportButton.TabIndex = 3;
             PrintReportButton.Text = "Печать отчета";
             PrintReportButton.UseVisualStyleBackColor = true;
             PrintReportButton.Click += PrintReportButton_Click;
             // 
-            // dateTimeIssuesStartInput
-            // 
-            dateTimeIssuesStartInput.Location = new Point(30, 251);
-            dateTimeIssuesStartInput.Name = "dateTimeIssuesStartInput";
-            dateTimeIssuesStartInput.Size = new Size(200, 23);
-            dateTimeIssuesStartInput.TabIndex = 4;
-            // 
-            // dateTimeIssuesEndInput
-            // 
-            dateTimeIssuesEndInput.Location = new Point(30, 290);
-            dateTimeIssuesEndInput.Name = "dateTimeIssuesEndInput";
-            dateTimeIssuesEndInput.Size = new Size(200, 23);
-            dateTimeIssuesEndInput.TabIndex = 5;
-            // 
-            // JiraFilterTextInput
-            // 
-            JiraFilterTextInput.Location = new Point(350, 251);
-            JiraFilterTextInput.Name = "JiraFilterTextInput";
-            JiraFilterTextInput.Size = new Size(377, 23);
-            JiraFilterTextInput.TabIndex = 6;
-            // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(30, 214);
+            label1.Location = new Point(34, 252);
             label1.Name = "label1";
-            label1.Size = new Size(260, 15);
+            label1.Size = new Size(330, 20);
             label1.TabIndex = 7;
             label1.Text = "Временной промежуток для получения задач";
             label1.Click += label1_Click;
             // 
+            // dateTimeIssuesStartInput
+            // 
+            dateTimeIssuesStartInput.Location = new Point(34, 356);
+            dateTimeIssuesStartInput.Margin = new Padding(3, 4, 3, 4);
+            dateTimeIssuesStartInput.Name = "dateTimeIssuesStartInput";
+            dateTimeIssuesStartInput.Size = new Size(228, 27);
+            dateTimeIssuesStartInput.TabIndex = 4;
+            // 
+            // dateTimeIssuesEndInput
+            // 
+            dateTimeIssuesEndInput.Location = new Point(34, 297);
+            dateTimeIssuesEndInput.Margin = new Padding(3, 4, 3, 4);
+            dateTimeIssuesEndInput.Name = "dateTimeIssuesEndInput";
+            dateTimeIssuesEndInput.Size = new Size(228, 27);
+            dateTimeIssuesEndInput.TabIndex = 5;
+            // 
+            // tabPage2
+            // 
+            tabPage2.Controls.Add(button1);
+            tabPage2.Location = new Point(4, 29);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.RightToLeft = RightToLeft.Yes;
+            tabPage2.Size = new Size(591, 171);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "KPI ";
+            tabPage2.UseVisualStyleBackColor = true;
+            tabPage2.Click += tabPage2_Click;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(23, 13);
+            button1.Name = "button1";
+            button1.Size = new Size(134, 29);
+            button1.TabIndex = 0;
+            button1.Text = "Печать KPI 1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button_print_kpi_1;
+            // 
+            // LoginTextInput
+            // 
+            LoginTextInput.Location = new Point(34, 68);
+            LoginTextInput.Margin = new Padding(3, 4, 3, 4);
+            LoginTextInput.Name = "LoginTextInput";
+            LoginTextInput.Size = new Size(215, 27);
+            LoginTextInput.TabIndex = 0;
+            LoginTextInput.TextChanged += LoginTextInput_TextChanged;
+            // 
+            // PasswordJiraTextInput
+            // 
+            PasswordJiraTextInput.Location = new Point(34, 135);
+            PasswordJiraTextInput.Margin = new Padding(3, 4, 3, 4);
+            PasswordJiraTextInput.Name = "PasswordJiraTextInput";
+            PasswordJiraTextInput.Size = new Size(215, 27);
+            PasswordJiraTextInput.TabIndex = 1;
+            PasswordJiraTextInput.UseSystemPasswordChar = true;
+            // 
+            // JiraLoginButton
+            // 
+            JiraLoginButton.Location = new Point(34, 187);
+            JiraLoginButton.Margin = new Padding(3, 4, 3, 4);
+            JiraLoginButton.Name = "JiraLoginButton";
+            JiraLoginButton.Size = new Size(216, 31);
+            JiraLoginButton.TabIndex = 2;
+            JiraLoginButton.Text = "Войти в Jira";
+            JiraLoginButton.UseVisualStyleBackColor = true;
+            JiraLoginButton.Click += JiraLoginButton_Click;
+            // 
+            // JiraFilterTextInput
+            // 
+            JiraFilterTextInput.Location = new Point(430, 282);
+            JiraFilterTextInput.Margin = new Padding(3, 4, 3, 4);
+            JiraFilterTextInput.Multiline = true;
+            JiraFilterTextInput.Name = "JiraFilterTextInput";
+            JiraFilterTextInput.Size = new Size(448, 101);
+            JiraFilterTextInput.TabIndex = 6;
+            // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(350, 214);
+            label2.Location = new Point(430, 252);
             label2.Name = "label2";
-            label2.Size = new Size(175, 15);
+            label2.Size = new Size(220, 20);
             label2.TabIndex = 8;
             label2.Text = "Дополнительные фильтры jira";
             // 
             // Пароль
             // 
             Пароль.AutoSize = true;
-            Пароль.Location = new Point(30, 83);
+            Пароль.Location = new Point(34, 111);
             Пароль.Name = "Пароль";
-            Пароль.Size = new Size(49, 15);
+            Пароль.Size = new Size(62, 20);
             Пароль.TabIndex = 9;
             Пароль.Text = "Пароль";
             Пароль.UseWaitCursor = true;
@@ -139,27 +200,28 @@
             // jiraloginlabel
             // 
             jiraloginlabel.AutoSize = true;
-            jiraloginlabel.Location = new Point(30, 24);
+            jiraloginlabel.Location = new Point(34, 32);
             jiraloginlabel.Name = "jiraloginlabel";
-            jiraloginlabel.Size = new Size(41, 15);
+            jiraloginlabel.Size = new Size(52, 20);
             jiraloginlabel.TabIndex = 10;
             jiraloginlabel.Text = "Логин";
             // 
             // StatusTextOutputLabel
             // 
             StatusTextOutputLabel.AutoSize = true;
-            StatusTextOutputLabel.Location = new Point(30, 392);
+            StatusTextOutputLabel.Location = new Point(34, 523);
             StatusTextOutputLabel.Name = "StatusTextOutputLabel";
-            StatusTextOutputLabel.Size = new Size(214, 15);
+            StatusTextOutputLabel.Size = new Size(272, 20);
             StatusTextOutputLabel.TabIndex = 11;
             StatusTextOutputLabel.Text = "Вывод дополнительной информации";
             StatusTextOutputLabel.Click += label_errors;
             // 
             // ErrorOutputTextBox
             // 
-            ErrorOutputTextBox.Location = new Point(30, 410);
+            ErrorOutputTextBox.Location = new Point(34, 547);
+            ErrorOutputTextBox.Margin = new Padding(3, 4, 3, 4);
             ErrorOutputTextBox.Name = "ErrorOutputTextBox";
-            ErrorOutputTextBox.Size = new Size(214, 23);
+            ErrorOutputTextBox.Size = new Size(244, 27);
             ErrorOutputTextBox.TabIndex = 12;
             ErrorOutputTextBox.TextChanged += ErrorOutputTextBox_TextChanged;
             // 
@@ -176,9 +238,10 @@
             // 
             // FileExplorerButton
             // 
-            FileExplorerButton.Location = new Point(565, 318);
+            FileExplorerButton.Location = new Point(750, 545);
+            FileExplorerButton.Margin = new Padding(3, 4, 3, 4);
             FileExplorerButton.Name = "FileExplorerButton";
-            FileExplorerButton.Size = new Size(162, 23);
+            FileExplorerButton.Size = new Size(123, 31);
             FileExplorerButton.TabIndex = 14;
             FileExplorerButton.Text = "Выбор папки";
             FileExplorerButton.UseVisualStyleBackColor = true;
@@ -186,9 +249,10 @@
             // 
             // FileDirectoryName
             // 
-            FileDirectoryName.Location = new Point(350, 318);
+            FileDirectoryName.Location = new Point(376, 547);
+            FileDirectoryName.Margin = new Padding(3, 4, 3, 4);
             FileDirectoryName.Name = "FileDirectoryName";
-            FileDirectoryName.Size = new Size(199, 23);
+            FileDirectoryName.Size = new Size(337, 27);
             FileDirectoryName.TabIndex = 16;
             FileDirectoryName.Text = "C:\\";
             FileDirectoryName.TextChanged += textBox3_TextChanged;
@@ -196,37 +260,41 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(350, 296);
+            label3.Location = new Point(376, 523);
             label3.Name = "label3";
-            label3.Size = new Size(191, 15);
+            label3.Size = new Size(243, 20);
             label3.TabIndex = 17;
             label3.Text = "Выбор папки для загрузки отчета";
             label3.Click += label3_Click_1;
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(914, 600);
+            Controls.Add(Sprint);
+            Controls.Add(label1);
             Controls.Add(label3);
+            Controls.Add(dateTimeIssuesStartInput);
             Controls.Add(FileDirectoryName);
+            Controls.Add(dateTimeIssuesEndInput);
             Controls.Add(FileExplorerButton);
             Controls.Add(ErrorOutputTextBox);
             Controls.Add(StatusTextOutputLabel);
             Controls.Add(jiraloginlabel);
             Controls.Add(Пароль);
             Controls.Add(label2);
-            Controls.Add(label1);
             Controls.Add(JiraFilterTextInput);
-            Controls.Add(dateTimeIssuesEndInput);
-            Controls.Add(dateTimeIssuesStartInput);
-            Controls.Add(PrintReportButton);
             Controls.Add(JiraLoginButton);
             Controls.Add(PasswordJiraTextInput);
             Controls.Add(LoginTextInput);
+            Margin = new Padding(3, 4, 3, 4);
             Name = "Form1";
             Text = "Выгрузка задач Jira";
             Load += Form1_Load;
+            Sprint.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
+            tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -252,5 +320,9 @@
         private Button FileExplorerButton;
         private Label label3;
         private TextBox FileDirectoryName;
+        private TabControl Sprint;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private Button button1;
     }
 }
