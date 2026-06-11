@@ -20,8 +20,8 @@ public class ExcelKpiReportGenerator
 
         using (var package = new ExcelPackage(new FileInfo(reportPath)))
         {
-            IssuesWorksheetHandler firstListHandler =
-                new IssuesWorksheetHandler(package, firstListName, sprintReportEntity);
+            Kpi1WorksheetHandler firstListHandler =
+                new Kpi1WorksheetHandler(package, firstListName, sprintReportEntity);
             firstListHandler.FillReportData();           
 
             package.Save();

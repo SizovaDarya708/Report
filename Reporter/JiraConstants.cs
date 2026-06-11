@@ -18,6 +18,7 @@ public static class JiraConstants
     public const string TestingOnMaster = "Тестирование в мастере";
     public const string TestingOnBranch = "Тестирование на ветке";
     public const string QualityAssessment = "Оценка качества";
+    public const string Closed = "Закрыт";
 
     #endregion
 

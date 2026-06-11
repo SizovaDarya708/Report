@@ -19,13 +19,13 @@ public class IssueReworkDto
 
 
         //группируем по автору - считаем сколько у автора статусов доработка по задаче
-        ReworksPerParticipant = reworkChanges.Any(c => c.Author != null)
+        ReworksPerParticipantList = reworkChanges.Any(c => c.Author != null)
             ?
             reworkChanges
             .Where(c => c.Author != null)
             .GroupBy(c => c.Author!.Name)
-            .ToDictionary(k => k.First().Author!, v => v.Count())
-            : new Dictionary<IssueParticipantEntity, int>() { };
+            .ToDictionary(k => k.First().Author!, v => v.ToList(), new IssueParticipantEntityComparer())
+            : new Dictionary<IssueParticipantEntity, List<ChangeLogEntity>>(new IssueParticipantEntityComparer()) { };
 
         CountOfRework = reworkChanges.Count();
     }
@@ -33,8 +33,8 @@ public class IssueReworkDto
     /// <summary>
     /// Количество переработок по сотруднику
     /// </summary>
-    public Dictionary<IssueParticipantEntity, int> ReworksPerParticipant { get; set; } =
-        new Dictionary<IssueParticipantEntity, int>() { };
+    public Dictionary<IssueParticipantEntity, List<ChangeLogEntity>> ReworksPerParticipantList { get; set; } =
+        new Dictionary<IssueParticipantEntity, List<ChangeLogEntity>>(new IssueParticipantEntityComparer()) { };
 
     public long TimeSpendInSeconds { get; set; } = 0;
 

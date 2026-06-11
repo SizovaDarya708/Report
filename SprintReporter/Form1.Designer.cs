@@ -31,11 +31,11 @@
             TabControl Sprint;
             tabPage1 = new TabPage();
             PrintReportButton = new Button();
+            tabPage2 = new TabPage();
+            button1 = new Button();
             label1 = new Label();
             dateTimeIssuesStartInput = new DateTimePicker();
             dateTimeIssuesEndInput = new DateTimePicker();
-            tabPage2 = new TabPage();
-            button1 = new Button();
             LoginTextInput = new TextBox();
             PasswordJiraTextInput = new TextBox();
             JiraLoginButton = new Button();
@@ -50,6 +50,8 @@
             FileExplorerButton = new Button();
             FileDirectoryName = new TextBox();
             label3 = new Label();
+            label4 = new Label();
+            label5 = new Label();
             Sprint = new TabControl();
             Sprint.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -90,32 +92,6 @@
             PrintReportButton.UseVisualStyleBackColor = true;
             PrintReportButton.Click += PrintReportButton_Click;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(34, 252);
-            label1.Name = "label1";
-            label1.Size = new Size(330, 20);
-            label1.TabIndex = 7;
-            label1.Text = "Временной промежуток для получения задач";
-            label1.Click += label1_Click;
-            // 
-            // dateTimeIssuesStartInput
-            // 
-            dateTimeIssuesStartInput.Location = new Point(34, 356);
-            dateTimeIssuesStartInput.Margin = new Padding(3, 4, 3, 4);
-            dateTimeIssuesStartInput.Name = "dateTimeIssuesStartInput";
-            dateTimeIssuesStartInput.Size = new Size(228, 27);
-            dateTimeIssuesStartInput.TabIndex = 4;
-            // 
-            // dateTimeIssuesEndInput
-            // 
-            dateTimeIssuesEndInput.Location = new Point(34, 297);
-            dateTimeIssuesEndInput.Margin = new Padding(3, 4, 3, 4);
-            dateTimeIssuesEndInput.Name = "dateTimeIssuesEndInput";
-            dateTimeIssuesEndInput.Size = new Size(228, 27);
-            dateTimeIssuesEndInput.TabIndex = 5;
-            // 
             // tabPage2
             // 
             tabPage2.Controls.Add(button1);
@@ -135,9 +111,36 @@
             button1.Name = "button1";
             button1.Size = new Size(134, 29);
             button1.TabIndex = 0;
-            button1.Text = "Печать KPI 1";
+            button1.Text = "Печать KPI";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button_print_kpi_1;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(34, 252);
+            label1.Name = "label1";
+            label1.Size = new Size(330, 20);
+            label1.TabIndex = 7;
+            label1.Text = "Временной промежуток для получения задач";
+            label1.Click += label1_Click;
+            // 
+            // dateTimeIssuesStartInput
+            // 
+            dateTimeIssuesStartInput.Location = new Point(34, 319);
+            dateTimeIssuesStartInput.Margin = new Padding(3, 4, 3, 4);
+            dateTimeIssuesStartInput.Name = "dateTimeIssuesStartInput";
+            dateTimeIssuesStartInput.Size = new Size(228, 27);
+            dateTimeIssuesStartInput.TabIndex = 4;
+            // 
+            // dateTimeIssuesEndInput
+            // 
+            dateTimeIssuesEndInput.Location = new Point(34, 393);
+            dateTimeIssuesEndInput.Margin = new Padding(3, 4, 3, 4);
+            dateTimeIssuesEndInput.Name = "dateTimeIssuesEndInput";
+            dateTimeIssuesEndInput.Size = new Size(228, 27);
+            dateTimeIssuesEndInput.TabIndex = 5;
+            dateTimeIssuesEndInput.ValueChanged += dateTimeIssuesEndInput_ValueChanged;
             // 
             // LoginTextInput
             // 
@@ -267,11 +270,32 @@
             label3.Text = "Выбор папки для загрузки отчета";
             label3.Click += label3_Click_1;
             // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(34, 295);
+            label4.Name = "label4";
+            label4.Size = new Size(94, 20);
+            label4.TabIndex = 19;
+            label4.Text = "Дата начала";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(34, 369);
+            label5.Name = "label5";
+            label5.Size = new Size(121, 20);
+            label5.TabIndex = 20;
+            label5.Text = "Дата окончания";
+            label5.Click += label5_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(914, 600);
+            Controls.Add(label5);
+            Controls.Add(label4);
             Controls.Add(Sprint);
             Controls.Add(label1);
             Controls.Add(label3);
@@ -324,5 +348,7 @@
         private TabPage tabPage1;
         private TabPage tabPage2;
         private Button button1;
+        private Label label5;
+        private Label label4;
     }
 }

@@ -27,7 +27,7 @@ public class JiraClientService : IJiraService
 
     private Jira client;
     
-    public async Task<Issue[]> GetIssuesForReportAsync(SprintIssuesDataInput input, CancellationToken cancellationToken)
+    public async Task<Issue[]> GetIssuesForReportAsync(BaseReportInput input, CancellationToken cancellationToken)
     {
         var jql = $"project = \"Планы по достижению показателей ГП РФ\" AND " + input.GetJql();
 

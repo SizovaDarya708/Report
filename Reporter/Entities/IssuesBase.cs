@@ -22,7 +22,7 @@ public abstract class IssuesBase
 
     private void AddIssue(IssueEntity issue, ReportPeriodDto reportPeriod)
     {
-        if (!issue.IsExistCreatedWorkLogsInReportPeriod(reportPeriod))
+        if (!issue.IsExistChangesInReportPeriod(reportPeriod))
         {
             return;
         }

@@ -40,9 +40,11 @@ public class IssueEntity
     /// Отфильтровать список задач по списаниям времени по задачам
     /// - отбрасываются задачи, которые менялись в промежутке времени без выполнения каких-либо работ
     /// </summary>
-    public bool IsExistCreatedWorkLogsInReportPeriod(ReportPeriodDto reportPeriod)
+    public bool IsExistChangesInReportPeriod(ReportPeriodDto reportPeriod)
     {
-        return Workflows.Any(w => w.UpdateDate >= reportPeriod.StartDate && w.UpdateDate < reportPeriod.EndDate);
+        return 
+            Workflows.Any(w => w.UpdateDate >= reportPeriod.StartDate && w.UpdateDate < reportPeriod.EndDate)
+            || ChangeLogs.Any(c => c.CreateDate >= reportPeriod.StartDate && c.CreateDate < reportPeriod.EndDate);
     }
 
     public void SetWorkflows(IEnumerable<Worklog> workflows)

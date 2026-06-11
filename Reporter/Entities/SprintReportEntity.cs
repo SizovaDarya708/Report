@@ -99,6 +99,21 @@ public class SprintReportEntity
 
     public async Task FillDataAsync(Issue[] JiraIssues)
     {
+#if DEBUG
+        //Для деббага
+        foreach (var issue in JiraIssues)
+        {
+            var sprintName = issue.GetFieldValue(JiraConstants.SprintField);
+
+            if (sprintName != null)
+            {
+                TryAddSprint(sprintName, out var sprint);
+                await sprint!.AddIssue(issue, ReportPeriod);
+                continue;
+            }
+            await WithoutSprintPool.AddIssue(issue, ReportPeriod);
+        }
+#else
         await Parallel.ForEachAsync(JiraIssues, async (issue, ct) =>
         {
             var sprintName = issue.GetFieldValue(JiraConstants.SprintField);
@@ -112,20 +127,7 @@ public class SprintReportEntity
             await WithoutSprintPool.AddIssue(issue, ReportPeriod);
 
         });
-
-        //Для деббага
-        //foreach (var issue in JiraIssues)
-        //{
-        //    var sprintName = issue.GetFieldValue(JiraConstants.SprintField);
-
-        //    if (sprintName != null)
-        //    {
-        //        TryAddSprint(sprintName, out var sprint);
-        //        await sprint!.AddIssue(issue, ReportPeriod);
-        //        continue;
-        //    }
-        //    await WithoutSprintPool.AddIssue(issue, ReportPeriod);
-        //}
+#endif
 
         SetWorklogs();
         SetParticipants();

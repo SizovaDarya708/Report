@@ -9,6 +9,7 @@ namespace SprintReporter
     {
         private IJiraService jiraService;
         private ISprintReportService sprintReportService;
+        private IKpiReportService kpiReportService;
 
         public Form1()
         {
@@ -158,9 +159,9 @@ namespace SprintReporter
                     return;
                 }
 
-                sprintReportService = new SprintReportService(jiraService);
-                var reportTask = sprintReportService.ExecuteAsync(
-                    new JiraInteraction.Dtos.SprintIssuesDataInput
+                kpiReportService = new KpiReportService(jiraService);
+                var reportTask = kpiReportService.ExecuteAsync(
+                    new JiraInteraction.Dtos.KpiReportInput
                     {
                         StartDate = dateTimeIssuesStartInput.Value,
                         EndDate = dateTimeIssuesEndInput.Value,
@@ -178,6 +179,16 @@ namespace SprintReporter
         }
 
         private void tabPage2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dateTimeIssuesEndInput_ValueChanged(object sender, EventArgs e)
         {
 
         }
