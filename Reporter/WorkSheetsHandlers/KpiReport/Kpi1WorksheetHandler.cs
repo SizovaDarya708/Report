@@ -2,6 +2,7 @@
 using OfficeOpenXml;
 using Reporter.Entities;
 using Reporter.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Reporter.WorkSheetsHandlers.SprintReport;
 
@@ -97,9 +98,9 @@ public class Kpi1WorksheetHandler : WorksheetExportHandlerBase
         }
 
         CurrentWorksheet.SetValue(currentRow, issuesWithReworkCountColumn, allReworksCount);
-        //CurrentWorksheet.Cells[currentRow, issuesWithReworkPercentageColumn].Style.Numberformat.Format = "0.###";
-        //Тут дебилизм надо смотреть как вывести дроби в excel 
-        CurrentWorksheet.SetValue(currentRow, issuesWithReworkPercentageColumn, (allReworksCount == 0 ? allReworksCount : (allReworksCount/allIssueCount)).ToString());
+        var reworkPercentage = allReworksCount == 0 ? allReworksCount : ((decimal)allReworksCount / (decimal)allIssueCount) * 100;
+        CurrentWorksheet.Cells[currentRow, issuesWithReworkPercentageColumn].Style.Numberformat.Format = "0.#";
+        CurrentWorksheet.SetValue(currentRow, issuesWithReworkPercentageColumn, reworkPercentage);
         CurrentWorksheet.Cells[currentRow, periodStartDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.StartDate);
         CurrentWorksheet.SetValue(currentRow, periodStartDateColumn, _sprintReportEntity.ReportPeriod.StartDate);
         CurrentWorksheet.Cells[currentRow, periodEndDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.EndDate);
