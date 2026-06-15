@@ -38,4 +38,14 @@ public static class JiraConstants
     public const string Error = "Ошибка";
     public const string Incident = "Инцидент";
     #endregion
+
+    #region Виды работ для списания
+    public const string EstimateTypeWorkDevelop = "Разработка";
+    public const string EstimateTypeRework = "Доработка";
+    public const string EstimateTypeReview = "Ревью";
+    public const string EstimateTypeAnaliz = "Анализ";
+    public const string EstimateTypeTesting = "Тестирование";
+    
+
+    #endregion
 }

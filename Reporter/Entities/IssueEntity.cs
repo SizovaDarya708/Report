@@ -116,10 +116,18 @@ public class IssueEntity
     //Все участники задачи (автор и исполнители)
     public List<IssueParticipantEntity> Participants { get; set; } = new List<IssueParticipantEntity>();
 
+    public List<IssueEstimateEntity> Estimates { get; set; } = new List<IssueEstimateEntity> ();
+
     public IssueParticipantEntity? GetParticipantByType(EmployeeType employeeType)
     {
         return Participants.Where(x => x.EmployeeType == employeeType).FirstOrDefault();
     }
+
+    public void SetEstimates()
+    {
+
+    }
+
 
     public void SetParticipants()
     {
