@@ -11,6 +11,9 @@ public class ExcelKpiReportGenerator
     private string thirdListName = "KPI 3";
     private string fourthListName = "KPI 4";
 
+
+    private string tenthListName = "KPI 10";
+
     public void GenerateReport(string filePath, SprintReportEntity sprintReportEntity)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -22,7 +25,11 @@ public class ExcelKpiReportGenerator
         {
             Kpi1WorksheetHandler firstListHandler =
                 new Kpi1WorksheetHandler(package, firstListName, sprintReportEntity);
-            firstListHandler.FillReportData();           
+            firstListHandler.FillReportData();
+
+            Kpi10WorksheetHandler tenthListHandler =
+                new Kpi10WorksheetHandler(package, tenthListName, sprintReportEntity);
+            tenthListHandler.FillReportData();
 
             package.Save();
         }

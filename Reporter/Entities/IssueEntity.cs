@@ -167,7 +167,7 @@ public class IssueEntity
 
     public IssueReworkDto GetReworkInfo()
     {
-        var reworkInfo = new IssueReworkDto(ChangeLogs, Workflows);
+        var reworkInfo = new IssueReworkDto(ChangeLogs, Workflows, Estimates);
         return reworkInfo;
     }
 

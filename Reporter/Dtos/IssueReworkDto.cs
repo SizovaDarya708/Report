@@ -6,7 +6,7 @@ public class IssueReworkDto
 {
     public IssueReworkDto() { }
 
-    public IssueReworkDto(IEnumerable<ChangeLogEntity> changeLogs, IEnumerable<WorklogEntity> workflows)
+    public IssueReworkDto(IEnumerable<ChangeLogEntity> changeLogs, IEnumerable<WorklogEntity> workflows, IEnumerable<IssueEstimateEntity> issueEstimate)
     {
         //найти changeLog, где есть нужные переводы и возможно рядом в item есть списания
         //пока по логике такой, что когда переводят в ревью со статуса Доработка
@@ -28,6 +28,9 @@ public class IssueReworkDto
             : new Dictionary<IssueParticipantEntity, List<ChangeLogEntity>>(new IssueParticipantEntityComparer()) { };
 
         CountOfRework = reworkChanges.Count();
+        TimeSpendInSeconds = issueEstimate
+            .Where(es => es.WorkEstimateType == WorkEstimateTypeEnum.Rework)
+            .Sum(es => es.Worklog.TimeSpendInSeconds);
     }
         
     /// <summary>
@@ -36,7 +39,7 @@ public class IssueReworkDto
     public Dictionary<IssueParticipantEntity, List<ChangeLogEntity>> ReworksPerParticipantList { get; set; } =
         new Dictionary<IssueParticipantEntity, List<ChangeLogEntity>>(new IssueParticipantEntityComparer()) { };
 
-    public long TimeSpendInSeconds { get; set; } = 0;
+    public long? TimeSpendInSeconds { get; set; } = 0;
 
     public int CountOfRework { get; set; } = 0;
 }
