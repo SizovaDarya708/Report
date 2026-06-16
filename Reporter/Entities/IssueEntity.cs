@@ -1,4 +1,5 @@
 ﻿using Atlassian.Jira;
+using JiraInteraction.Dtos;
 using Reporter.Dtos;
 using Reporter.Extensions;
 
@@ -83,9 +84,11 @@ public class IssueEntity
 
     public long? TimeSpentInSeconds { get; set; }
 
+    //TODO Временно не считается
     /// <summary> Оценка времени на задачу </summary>
     public long? TimeEstimateInSeconds { get; set; }
 
+    //TODO Временно не считается, надо переделывать логику
     /// <summary> Время на разработку оставшееся относительно оценки </summary>
     public long? TimeRemainingInSeconds { get; set; }
 
@@ -116,18 +119,10 @@ public class IssueEntity
     //Все участники задачи (автор и исполнители)
     public List<IssueParticipantEntity> Participants { get; set; } = new List<IssueParticipantEntity>();
 
-    public List<IssueEstimateEntity> Estimates { get; set; } = new List<IssueEstimateEntity> ();
-
     public IssueParticipantEntity? GetParticipantByType(EmployeeType employeeType)
     {
         return Participants.Where(x => x.EmployeeType == employeeType).FirstOrDefault();
     }
-
-    public void SetEstimates()
-    {
-
-    }
-
 
     public void SetParticipants()
     {
@@ -167,9 +162,6 @@ public class IssueEntity
         Participants.Add(participant);
     }
 
-    /// <summary> Содержатся данные о записях о работе </summary>
-    public List<WorklogEntity> Workflows { get; set; } = new List<WorklogEntity>();
-
     /// <summary> Содержатся данные о переходах из статуса в статус </summary>
     public List<ChangeLogEntity> ChangeLogs { get; set; } = new List<ChangeLogEntity>();
 
@@ -177,5 +169,24 @@ public class IssueEntity
     {
         var reworkInfo = new IssueReworkDto(ChangeLogs, Workflows);
         return reworkInfo;
+    }
+
+    public List<IssueEstimateEntity> Estimates { get; set; } = new List<IssueEstimateEntity>();
+
+    /// <summary> Содержатся данные о записях о работе </summary>
+    public List<WorklogEntity> Workflows { get; set; } = new List<WorklogEntity>();
+
+    public void SetEstimateData(List<EstimateByWorklogTypeDto> estimateData)
+    {
+        foreach (var estimate in estimateData)
+        {
+            var estimateWorklog = Workflows.Where(w => w.Id == estimate.WorklogId).FirstOrDefault();
+            if (estimateWorklog == null)
+            {
+                continue;
+            }
+
+            Estimates.Add(new IssueEstimateEntity(estimate, estimateWorklog));
+        }
     }
 }

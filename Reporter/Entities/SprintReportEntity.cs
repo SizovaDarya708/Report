@@ -11,20 +11,15 @@ public class SprintReportEntity
         ReportPeriod = new ReportPeriodDto(startDate, endDate);
     }
 
-    public void SetEstimateTimeData(List<EstimateDataDto> estimateData)
+    public void SetEstimateTimeData(Dictionary<string, List<EstimateByWorklogTypeDto>>? estimateData)
     {
-        var estimateDict = estimateData
-            .Where(x => x.EstimateTime != null)
-            .GroupBy(x => x.Jiraidentifier)
-            .ToDictionary(x => x.Key, v => v.Select(x => x.EstimateTime).First());
-
-        if (estimateDict == null)
+        if (estimateData == null)
         {
             return;
         }
 
-        WithoutSprintPool.SetEstimateData(estimateDict!);
-        Parallel.ForEach(Sprints, sprint => sprint.SetEstimateData(estimateDict!));
+        WithoutSprintPool.SetEstimateData(estimateData!);
+        Parallel.ForEach(Sprints, sprint => sprint.SetEstimateData(estimateData!));
     }
 
     public SprintEntity? GetSprintByIssueKey(string key)

@@ -26,7 +26,15 @@ public static class WorkEstimateExtensions
         }
         else if (workEstimates == JiraConstants.EstimateTypeRework)
         {
-            return WorkEstimateTypeEnum.Rework;        
+            return WorkEstimateTypeEnum.Rework;
+        }
+        else if (workEstimates == JiraConstants.EstimateTypeAnaliz)
+        {
+            return WorkEstimateTypeEnum.Analys;
+        }
+        else if (workEstimates == JiraConstants.EstimateTypeReview)
+        {
+            return WorkEstimateTypeEnum.Review;
         }
         return null;
     }

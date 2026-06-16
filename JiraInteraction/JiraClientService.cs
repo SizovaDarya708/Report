@@ -58,33 +58,45 @@ public class JiraClientService : IJiraService
         return dict;
     }
 
-    public async Task<List<EstimateDataDto>> GetEstimateDataPerIssuesAsync(string[] jiraIdentifiers, CancellationToken cancellationToken)
+    public async Task<Dictionary<string, List<EstimateByWorklogTypeDto>>> GetEstimateDataPerIssuesAsync(string[] jiraKeys, CancellationToken cancellationToken)
     {
-        var estimateData = new List<EstimateDataDto>();
+        var estimatesPerIssue = new Dictionary<string, List<EstimateByWorklogTypeDto>>();
 
-        var remaningTimePattern = @"remaining time"">([0-9]*h [0-9]*m|[0-9]*h)";
-        Regex rt = new Regex(remaningTimePattern);
+        var estimateByWorklogTypePattern = @"<select\s+style=""display:none;""[\s\S]*?<\/option>";
+        Regex worklogEstimateDataRg = new Regex(estimateByWorklogTypePattern);
 
-        var estimateTimePattern = @"estimate"">([0-9]*h [0-9]*m|[0-9]*h)";
-        Regex et = new Regex(estimateTimePattern);
+        var workTypePattern = @"<option\s+value\s*=\s*""([^""]*)""";
+        Regex wkTypeRg = new Regex(workTypePattern);
 
-        await Parallel.ForEachAsync(jiraIdentifiers, async (identifier, ct) =>
+        var wklogIdPattern = "data-worklog\\s*=\\s*[\"'](\\d+)[\"']";
+        var wkIdRg = new Regex(wklogIdPattern);
+
+        await Parallel.ForEachAsync(jiraKeys, async (key, ct) =>
         {
             var info = await client.RestClient.RestSharpClient.ExecuteGetAsync(
-            new RestRequest($"/secure/BarsEstimateIssue!default.jspa?id={identifier}", Method.GET), ct);
+            new RestRequest($"/secure/TempoIssueBoard!report.jspa?v=1&issue={key}&show_worklog_attribute:_Тип_=true", Method.GET));
             if (info.StatusCode == System.Net.HttpStatusCode.OK)
             {
+                var estimates = new List<EstimateByWorklogTypeDto>();
+
                 var infoContent = info.Content;
-                var remainingTime = rt.Match(infoContent);
-                var remainingTimeStr = remainingTime?.Value;
+                var worklogDataStrMatches = worklogEstimateDataRg.Matches(infoContent);
+                var worklogDataStrCollection = worklogDataStrMatches;
 
-                var estimateTime = et.Match(infoContent);
-                var estimateTimeStr = estimateTime?.Value;
+                foreach (var worklog in worklogDataStrCollection)
+                {
+                    var workType = wkTypeRg.Match(worklog.ToString());
+                    var workTypeStr = workType.Groups.Values.Last().Value;
 
-                estimateData.Add(new EstimateDataDto(identifier, estimateTimeStr, remainingTimeStr));
-            }
+                    var worklogId = wkIdRg.Match(worklog.ToString());
+                    var wkIdStr = worklogId.Groups.Values.Last().Value;
+
+                    estimates.Add(new EstimateByWorklogTypeDto(wkIdStr, workTypeStr));
+                }
+                estimatesPerIssue.TryAdd(key, estimates);
+            }            
         });
 
-        return estimateData;
+        return estimatesPerIssue;
     }
 }

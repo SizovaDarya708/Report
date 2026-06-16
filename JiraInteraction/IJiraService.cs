@@ -11,5 +11,5 @@ public interface IJiraService
 
     Task<Dictionary<string, string>> GetUsersDepartmentAsync(string[] userLogins, CancellationToken cancellationToken);
 
-    Task<List<EstimateDataDto>> GetEstimateDataPerIssuesAsync(string[] jiraIdentifiers, CancellationToken cancellationToken);
+    Task<Dictionary<string, List<EstimateByWorklogTypeDto>>> GetEstimateDataPerIssuesAsync(string[] jiraKey, CancellationToken cancellationToken);
 }

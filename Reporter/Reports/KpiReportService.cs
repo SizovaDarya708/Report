@@ -35,8 +35,8 @@ public class KpiReportService : IKpiReportService
         //reportEntity.SetParticipantDepartment(departments);
 
         //Получение и заполнение данных о списаниях времени (не приходит по API)
-        var jiraIdentifiers = issues.Select(x => x.JiraIdentifier).ToArray();
-        var estimateDto = await _jiraService.GetEstimateDataPerIssuesAsync(jiraIdentifiers, cancellationToken);
+        var jiraKeys = issues.Select(x => x.Key.Value).ToArray();
+        var estimateDto = await _jiraService.GetEstimateDataPerIssuesAsync(jiraKeys, cancellationToken);
         reportEntity.SetEstimateTimeData(estimateDto);
 
         _excelReportGenerator.GenerateReport(input.FilePath, reportEntity);

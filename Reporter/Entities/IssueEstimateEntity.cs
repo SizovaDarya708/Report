@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using JiraInteraction.Dtos;
 
 namespace Reporter.Entities;
 
 public class IssueEstimateEntity
 {
-    public string WorkLogId { get; set; }
+    public IssueEstimateEntity(EstimateByWorklogTypeDto estimate, WorklogEntity worklog)
+    {
+        WorkEstimateType = WorkEstimateExtensions.GetWorkEstimateType(estimate.WorklogType);
+        Worklog = worklog;
+    }
 
-    public WorkEstimateTypeEnum WorkEstimateType { get; set; }
+    public WorkEstimateTypeEnum? WorkEstimateType { get; set; }
 
     public WorklogEntity Worklog { get; set; }
 }

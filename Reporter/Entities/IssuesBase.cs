@@ -32,17 +32,18 @@ public abstract class IssuesBase
 
     public List<IssueEntity> Issues { get; set; } = new List<IssueEntity>();
 
-    public void SetEstimateData(Dictionary<string, EstimateTime> estimateData)
+    public void SetEstimateData(Dictionary<string, List<EstimateByWorklogTypeDto>> estimateData)
     {
         foreach (var issue in Issues)
         {
-            if (!estimateData.TryGetValue(issue.JiraIdentifier, out var estimates))
+            estimateData.TryGetValue(issue.Key, out var estimates);
+
+            if (estimates == null)
             {
                 continue;
             }
 
-            issue.TimeRemainingInSeconds = estimates.RemainingTimeInSeconds;
-            issue.TimeEstimateInSeconds = estimates.EstimateTimeInSeconds;
+            issue.SetEstimateData(estimates);
         }
-    }   
+    }
 }
