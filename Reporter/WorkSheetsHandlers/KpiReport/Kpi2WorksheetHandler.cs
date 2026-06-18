@@ -1,8 +1,6 @@
-﻿using Atlassian.Jira;
-using OfficeOpenXml;
+﻿using OfficeOpenXml;
 using Reporter.Entities;
 using Reporter.Extensions;
-using System.ComponentModel.DataAnnotations;
 
 namespace Reporter.WorkSheetsHandlers.SprintReport;
 
@@ -22,10 +20,10 @@ public class Kpi2WorksheetHandler : WorksheetExportHandlerBase
     private static int headerRow = 1;
     private int currentRow = 2;
 
-    private int authorNameColumn = 2;
-    private int issueCountColumn = 3;
-    private int issuesWithReworkCountColumn = 4;
-    private int issuesWithReworkPercentageColumn = 5;
+    private int projectNameColumn = 2;
+    private int totalClosedIssuesColumn = 3;
+    private int ResolveIssuesTimeColumn = 4;
+    private int AverageResolvingTimeForIssues = 5;
     private int periodStartDateColumn = 6;
     private int periodEndDateColumn = 7;
 
@@ -40,67 +38,65 @@ public class Kpi2WorksheetHandler : WorksheetExportHandlerBase
 
     private void FillData()
     {
-        var developerPerIssues = new Dictionary<IssueParticipantEntity, List<IssueEntity>>(new IssueParticipantEntityComparer()) {};
+        //тут надо группировку по проектам
         var allIssues = _sprintReportEntity.GetAllIssues();
+        var projectGroupedIssues = allIssues.GroupBy(issue => issue.ProjectKey)
+            .ToDictionary(k => k.Key, v => v.Select(i => i).ToList());
 
-        //TODO взять задачи, которые вообще интересуют issuetype in (Инцидент, "New Feature", Bug, Improvement, ошибка)
-
-        var allIssuesInfo = allIssues
-            .Where(i => i.Status.ToLower() == JiraConstants.Closed.ToLower());
-
-        //группируем задачи по разработчику
-        foreach (var issue in allIssuesInfo)
+        foreach (var projectIssues in projectGroupedIssues)
         {
-            var developer = issue.GetParticipantByType(EmployeeType.Developer);
+            FillReworksByProjects(projectIssues);
+        }
+    }
+    private void FillReworksByProjects(KeyValuePair<string, List<IssueEntity>> projectIssues)
+    {
+        var projectKey = projectIssues.Key;
+        var allClosedIssues = projectIssues.Value.Where(i => i.Status == JiraConstants.Closed);
 
-            if (developer == null)
+        CurrentWorksheet.SetValue(currentRow, projectNameColumn, projectKey);
+
+        TimeSpan allResolvingTime = TimeSpan.FromSeconds(0);
+        foreach (var issue in allClosedIssues)
+        {
+            //надо посчитать сколько по времени задача была в к разработке от реализовано
+            //время когда задача попала от "к разработке" в "разработка"
+            var fromToDevelop = issue.ChangeLogs.Where(x => x.Items.Any(i =>
+                i.FieldName.ToLower() == JiraConstants.Status.ToLower()
+                && i.FromValue.ToLower() == JiraConstants.ToWork.ToLower()
+                && i.ToValue.ToLower() == JiraConstants.Work.ToLower())).First().CreateDate;
+
+            //время от разработка в реализовано - за счет OrderBy и First это будет первый переход в реализовано
+            var fromReviewToReady = issue.ChangeLogs.Where(x => x.Items.Any(i =>
+                i.FieldName.ToLower() == JiraConstants.Status.ToLower()
+                && i.FromValue.ToLower() == JiraConstants.Review.ToLower()
+                && i.ToValue.ToLower() == JiraConstants.Ready.ToLower())).OrderBy(x => x.CreateDate).First().CreateDate;
+
+            //время чистого решения без доработок
+            var resolveWithoutReworkTime = fromToDevelop - fromReviewToReady;
+
+            //теперь надо считать время взятие в доработку - таких может быть много
+            var fromToRework = issue.ChangeLogs.Where(x => x.Items.Any(i =>
+                i.FieldName.ToLower() == JiraConstants.Status.ToLower()
+                && i.FromValue.ToLower() == JiraConstants.ToRework.ToLower()
+                && i.ToValue.ToLower() == JiraConstants.Rework.ToLower()));
+
+            //все переходы в реализовано - их много
+            var fromToReady = issue.ChangeLogs.Where(x => x.Items.Any(i =>
+                i.FieldName.ToLower() == JiraConstants.Status.ToLower()
+                && i.FromValue.ToLower() == JiraConstants.Review.ToLower()
+                && i.ToValue.ToLower() == JiraConstants.Ready.ToLower())).OrderBy(x => x.CreateDate);
+
+            //после этого надо как-то группировать переходы и считать время, после суммировать
+            if (resolveWithoutReworkTime == null)
             {
                 continue;
             }
-
-            if (developerPerIssues.ContainsKey(developer))
-            {
-                developerPerIssues[developer].Add(issue);
-            }
-            else
-            {
-                developerPerIssues.Add(developer, new List<IssueEntity> { issue });
-            }
+            allResolvingTime += resolveWithoutReworkTime!.Value; // + все что было по доработкам
         }
+        CurrentWorksheet.SetValue(currentRow, totalClosedIssuesColumn, allClosedIssues.Count());
+        CurrentWorksheet.SetValue(currentRow, ResolveIssuesTimeColumn, allResolvingTime);
+        CurrentWorksheet.SetValue(currentRow, AverageResolvingTimeForIssues, allResolvingTime / allClosedIssues.Count());
 
-        foreach (var developer in developerPerIssues)
-        {
-            FillReworksByDeveloper(developer);
-        }
-    }
-    private void FillReworksByDeveloper(KeyValuePair<IssueParticipantEntity, List<IssueEntity>> developersReworks)
-    {
-        CurrentWorksheet.SetValue(currentRow, authorNameColumn, developersReworks.Key.Name);
-        var allIssueCount = developersReworks.Value.Count;
-        CurrentWorksheet.SetValue(currentRow, issueCountColumn, allIssueCount);
-
-        //Подсчитать все переработки по задачам
-
-        var allReworksCount = 0;
-        foreach (var issue in developersReworks.Value)
-        {
-            var reworksInfo = issue.GetReworkInfo();
-            reworksInfo.ReworksPerParticipantList.TryGetValue(developersReworks.Key, out var issueReworks);
-
-            if (issueReworks == null)
-            {
-                continue;            
-            }
-
-            var allReworksInPeriodCount = issueReworks.Count();
-
-            allReworksCount += allReworksInPeriodCount;                    
-        }
-
-        CurrentWorksheet.SetValue(currentRow, issuesWithReworkCountColumn, allReworksCount);
-        var reworkPercentage = allReworksCount == 0 ? allReworksCount : ((decimal)allReworksCount / (decimal)allIssueCount) * 100;
-        CurrentWorksheet.Cells[currentRow, issuesWithReworkPercentageColumn].Style.Numberformat.Format = "0.#";
-        CurrentWorksheet.SetValue(currentRow, issuesWithReworkPercentageColumn, reworkPercentage);
         CurrentWorksheet.Cells[currentRow, periodStartDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.StartDate);
         CurrentWorksheet.SetValue(currentRow, periodStartDateColumn, _sprintReportEntity.ReportPeriod.StartDate);
         CurrentWorksheet.Cells[currentRow, periodEndDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.EndDate);
@@ -111,10 +107,10 @@ public class Kpi2WorksheetHandler : WorksheetExportHandlerBase
     private void FillHeaders()
     {
         //Заголовки данных
-        CurrentWorksheet.SetValue(headerRow, authorNameColumn, "Сотрудник");
-        CurrentWorksheet.SetValue(headerRow, issueCountColumn, "Количество задач");
-        CurrentWorksheet.SetValue(headerRow, issuesWithReworkCountColumn, "Количество задач с доработками");
-        CurrentWorksheet.SetValue(headerRow, issuesWithReworkPercentageColumn, "Процент задач с доработками");
+        CurrentWorksheet.SetValue(headerRow, projectNameColumn, "Проект");
+        CurrentWorksheet.SetValue(headerRow, totalClosedIssuesColumn, "Количество задач");
+        CurrentWorksheet.SetValue(headerRow, ResolveIssuesTimeColumn, "Суммарное время решения задач");
+        CurrentWorksheet.SetValue(headerRow, AverageResolvingTimeForIssues, "Среднее время решения дефекта");
 
         CurrentWorksheet.SetValue(headerRow, periodStartDateColumn, "Начало периода");
         CurrentWorksheet.SetValue(headerRow, periodEndDateColumn, "Конец периода");

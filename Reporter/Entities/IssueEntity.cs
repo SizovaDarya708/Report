@@ -12,6 +12,7 @@ public class IssueEntity
     public IssueEntity(Issue issue)
     {
         Key = issue.Key.Value;
+        ProjectKey = issue.Project;
         Title = issue.Summary;
         Description = issue.Description;
         Status = issue.Status.Name;
@@ -69,6 +70,8 @@ public class IssueEntity
     }
 
     public string JiraIdentifier { get; set; }
+
+    public string ProjectKey { get; set; }
 
     public string Key { get; set; }
 
