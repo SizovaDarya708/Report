@@ -51,7 +51,8 @@ public class Kpi2WorksheetHandler : WorksheetExportHandlerBase
     private void FillReworksByProjects(KeyValuePair<string, List<IssueEntity>> projectIssues)
     {
         var projectKey = projectIssues.Key;
-        var allClosedIssues = projectIssues.Value.Where(i => i.Status == JiraConstants.Closed);
+        var allClosedIssues = projectIssues.Value.Where(i => i.Status == JiraConstants.Closed)
+            .Where(i => i.Type == JiraConstants.Error || i.Type == JiraConstants.Incident);
 
         CurrentWorksheet.SetValue(currentRow, projectNameColumn, projectKey);
 

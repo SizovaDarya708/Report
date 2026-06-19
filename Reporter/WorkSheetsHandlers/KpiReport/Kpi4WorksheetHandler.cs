@@ -40,71 +40,10 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
 
     private void FillData()
     {
-        var developerPerIssues = new Dictionary<IssueParticipantEntity, List<IssueEntity>>(new IssueParticipantEntityComparer()) {};
-        var allIssues = _sprintReportEntity.GetAllIssues();
-
-        //TODO взять задачи, которые вообще интересуют issuetype in (Инцидент, "New Feature", Bug, Improvement, ошибка)
-
-        var allIssuesInfo = allIssues
-            .Where(i => i.Status.ToLower() == JiraConstants.Closed.ToLower());
-
-        //группируем задачи по разработчику
-        foreach (var issue in allIssuesInfo)
-        {
-            var developer = issue.GetParticipantByType(EmployeeType.Developer);
-
-            if (developer == null)
-            {
-                continue;
-            }
-
-            if (developerPerIssues.ContainsKey(developer))
-            {
-                developerPerIssues[developer].Add(issue);
-            }
-            else
-            {
-                developerPerIssues.Add(developer, new List<IssueEntity> { issue });
-            }
-        }
-
-        foreach (var developer in developerPerIssues)
-        {
-            FillReworksByDeveloper(developer);
-        }
     }
     private void FillReworksByDeveloper(KeyValuePair<IssueParticipantEntity, List<IssueEntity>> developersReworks)
     {
-        //CurrentWorksheet.SetValue(currentRow, authorNameColumn, developersReworks.Key.Name);
-        //var allIssueCount = developersReworks.Value.Count;
-        //CurrentWorksheet.SetValue(currentRow, issueCountColumn, allIssueCount);
-
-        ////Подсчитать все переработки по задачам
-
-        //var allReworksCount = 0;
-        //foreach (var issue in developersReworks.Value)
-        //{
-        //    var reworksInfo = issue.GetReworkInfo();
-        //    reworksInfo.ReworksPerParticipantList.TryGetValue(developersReworks.Key, out var issueReworks);
-
-        //    if (issueReworks == null)
-        //    {
-        //        continue;            
-        //    }
-
-        //    var allReworksInPeriodCount = issueReworks.Count();
-
-        //    allReworksCount += allReworksInPeriodCount;                    
-        //}
-
-        //CurrentWorksheet.SetValue(currentRow, issuesWithReworkCountColumn, allReworksCount);
-        //var reworkPercentage = allReworksCount == 0 ? allReworksCount : ((decimal)allReworksCount / (decimal)allIssueCount) * 100;
-        //CurrentWorksheet.Cells[currentRow, issuesWithReworkPercentageColumn].Style.Numberformat.Format = "0.#";
-        //CurrentWorksheet.SetValue(currentRow, issuesWithReworkPercentageColumn, reworkPercentage);
-        //CurrentWorksheet.Cells[currentRow, periodStartDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.StartDate);
-        //CurrentWorksheet.SetValue(currentRow, periodStartDateColumn, _sprintReportEntity.ReportPeriod.StartDate);
-        //CurrentWorksheet.Cells[currentRow, periodEndDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.EndDate);
-        //CurrentWorksheet.SetValue(currentRow, periodEndDateColumn, _sprintReportEntity.ReportPeriod.EndDate);
+       
         currentRow++;
     }
 

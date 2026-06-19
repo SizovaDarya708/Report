@@ -35,9 +35,9 @@ public class ExcelKpiReportGenerator
                 new Kpi3WorksheetHandler(package, thirdListName, sprintReportEntity);
             thirdListHandler.FillReportData();
 
-            Kpi4WorksheetHandler fourthListHandler =
-                new Kpi4WorksheetHandler(package, fourthListName, sprintReportEntity);
-            fourthListHandler.FillReportData();
+            //Kpi4WorksheetHandler fourthListHandler =
+            //    new Kpi4WorksheetHandler(package, fourthListName, sprintReportEntity);
+            //fourthListHandler.FillReportData();
 
             Kpi10WorksheetHandler tenthListHandler =
                 new Kpi10WorksheetHandler(package, tenthListName, sprintReportEntity);
