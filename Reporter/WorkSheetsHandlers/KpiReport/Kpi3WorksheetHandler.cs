@@ -98,8 +98,8 @@ public class Kpi3WorksheetHandler : WorksheetExportHandlerBase
             }
 
             eS_i += s_i.Value;
-            rHtoSbyIssues.Add(h_i/s_i!.Value);  
-        
+            var r_i = h_i / s_i!.Value;
+            rHtoSbyIssues.Add(r_i);        
         }
 
         if (rHtoSbyIssues.Count == 0)
@@ -143,6 +143,7 @@ public class Kpi3WorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(currentRow, StartPeriodDateColumn, _sprintReportEntity.ReportPeriod.StartDate);
         CurrentWorksheet.Cells[currentRow, EndPeriodDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.EndDate);
         CurrentWorksheet.SetValue(currentRow, EndPeriodDateColumn, _sprintReportEntity.ReportPeriod.EndDate);
+
 
         currentRow++;
     }
