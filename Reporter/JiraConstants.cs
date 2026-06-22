@@ -35,7 +35,7 @@ public static class JiraConstants
     #endregion
 
     #region Типы задач
-    public const string Error = "Ошибка";
+    public const string Bug = "Ошибка";
     public const string Incident = "Инцидент";
     #endregion
 

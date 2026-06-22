@@ -52,7 +52,7 @@ public class Kpi2WorksheetHandler : WorksheetExportHandlerBase
     {
         var projectKey = projectIssues.Key;
         var allClosedIssues = projectIssues.Value.Where(i => i.Status == JiraConstants.Closed)
-            .Where(i => i.Type == JiraConstants.Error || i.Type == JiraConstants.Incident);
+            .Where(i => i.Type == JiraConstants.Bug || i.Type == JiraConstants.Incident);
 
         CurrentWorksheet.SetValue(currentRow, projectNameColumn, projectKey);
 

@@ -54,7 +54,7 @@ public class ErrorWorksheetHandler : WorksheetExportHandlerBase
 
     private void FillDataWithoutSprint()
     {
-        var errors = _sprintReportEntity.WithoutSprintPool.Issues.Where(iss => iss.Type == JiraConstants.Error || iss.Type == JiraConstants.Incident);
+        var errors = _sprintReportEntity.WithoutSprintPool.Issues.Where(iss => iss.Type == JiraConstants.Bug || iss.Type == JiraConstants.Incident);
         foreach (var issue in errors)
         {
             FillCommonForSprintAndWithoutSprintIssues(issue);
