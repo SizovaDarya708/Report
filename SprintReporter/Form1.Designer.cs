@@ -49,12 +49,14 @@
             label3 = new Label();
             label4 = new Label();
             label5 = new Label();
+            projectKeysList = new CheckedListBox();
+            label6 = new Label();
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
             SuspendLayout();
             // 
             // PrintReportButton
             // 
-            PrintReportButton.Location = new Point(523, 68);
+            PrintReportButton.Location = new Point(582, 68);
             PrintReportButton.Margin = new Padding(3, 4, 3, 4);
             PrintReportButton.Name = "PrintReportButton";
             PrintReportButton.Size = new Size(229, 31);
@@ -65,9 +67,9 @@
             // 
             // button1
             // 
-            button1.Location = new Point(355, 68);
+            button1.Location = new Point(582, 111);
             button1.Name = "button1";
-            button1.Size = new Size(134, 29);
+            button1.Size = new Size(229, 29);
             button1.TabIndex = 0;
             button1.Text = "Печать KPI";
             button1.UseVisualStyleBackColor = true;
@@ -248,11 +250,33 @@
             label5.Text = "Дата окончания";
             label5.Click += label5_Click;
             // 
+            // checkedListBox1
+            // 
+            projectKeysList.FormattingEnabled = true;
+            projectKeysList.Items.AddRange(new object[] { "GP", "GPREGION", "GPBOX" });
+            projectKeysList.Location = new Point(297, 68);
+            projectKeysList.Name = "checkedListBox1";
+            projectKeysList.Size = new Size(150, 114);
+            projectKeysList.TabIndex = 21;
+            projectKeysList.SelectedIndexChanged += checkedListBox1_SelectedIndexChanged_1;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(297, 32);
+            label6.Name = "label6";
+            label6.Size = new Size(193, 20);
+            label6.TabIndex = 22;
+            label6.Text = "Выбор проектов выгрузки";
+            label6.Click += label6_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(914, 600);
+            Controls.Add(label6);
+            Controls.Add(projectKeysList);
             Controls.Add(button1);
             Controls.Add(PrintReportButton);
             Controls.Add(label5);
@@ -304,5 +328,7 @@
         private Button button1;
         private Label label5;
         private Label label4;
+        private Label label6;
+        private CheckedListBox projectKeysList;
     }
 }

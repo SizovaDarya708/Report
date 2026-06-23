@@ -14,6 +14,7 @@ namespace SprintReporter
         public Form1()
         {
             InitializeComponent();
+            DefaultValuesInitialization();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -41,7 +42,7 @@ namespace SprintReporter
             {
                 JiraLoginButton.BackColor = Color.Red;
             }
-        }       
+        }
 
         private async void PrintReportButton_Click(object sender, EventArgs e)
         {
@@ -49,7 +50,7 @@ namespace SprintReporter
             {
                 if (!IsValidForm())
                 {
-                    return;                
+                    return;
                 }
 
                 sprintReportService = new SprintReportService(jiraService);
@@ -60,6 +61,7 @@ namespace SprintReporter
                         EndDate = dateTimeIssuesEndInput.Value,
                         AdditionalJiraFilter = JiraFilterTextInput.Text,
                         FilePath = FileDirectoryName.Text,
+                        ProjectKeys = projectKeysList.CheckedItems.Cast<string>().ToList()
                     });
                 await reportTask;
                 SystemSounds.Beep.Play();
@@ -162,6 +164,7 @@ namespace SprintReporter
                         EndDate = dateTimeIssuesEndInput.Value,
                         AdditionalJiraFilter = JiraFilterTextInput.Text,
                         FilePath = FileDirectoryName.Text,
+                        ProjectKeys = projectKeysList.CheckedItems.Cast<string>().ToList()
                     });
                 await reportTask;
                 SystemSounds.Beep.Play();
@@ -196,7 +199,7 @@ namespace SprintReporter
         private bool IsValidForm()
         {
             ErrorOutputTextBox.Text = string.Empty;
-            return IsValidAuthorization() && IsValidFileDirectoryName();        
+            return IsValidAuthorization() && IsValidFileDirectoryName() && IsValidProjectKeysCheckedList();
         }
 
         private bool IsValidAuthorization()
@@ -217,6 +220,42 @@ namespace SprintReporter
                 return false;
             }
             return true;
+        }
+
+        private bool IsValidProjectKeysCheckedList()
+        {
+            if (projectKeysList.CheckedItems.Count == 0)
+            {
+                ErrorOutputTextBox.Text = "Необходимо выбрать хотя бы один проект для выгрузки";
+                return false;
+            }
+            return true;
+        }
+
+        private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkedListBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DefaultValuesInitialization()
+        {
+            for (int i = 0; i < projectKeysList.Items.Count; i++)
+            {
+                projectKeysList.SetItemChecked(i, true);
+            }
+
+            var currentDate = DateTime.Now;
+            dateTimeIssuesStartInput.Value = new DateTime(day: 1, month: currentDate.Month, year: currentDate.Year);
         }
     }
 }
