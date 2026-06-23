@@ -1,8 +1,6 @@
-﻿using Atlassian.Jira;
-using OfficeOpenXml;
+﻿using OfficeOpenXml;
 using Reporter.Entities;
 using Reporter.Extensions;
-using System.ComponentModel.DataAnnotations;
 
 namespace Reporter.WorkSheetsHandlers.SprintReport;
 
@@ -22,6 +20,7 @@ public class Kpi5WorksheetHandler : WorksheetExportHandlerBase
     private static int headerRow = 1;
     private int currentRow = 2;
 
+    private int projectKeyColumn = 1;
     private int authorNameColumn = 2;
     private int issueCountColumn = 3;
     private int reviewTimeColumn = 4;
@@ -76,6 +75,12 @@ public class Kpi5WorksheetHandler : WorksheetExportHandlerBase
     }
     private void FillDataByDeveloper(KeyValuePair<IssueParticipantEntity, List<IssueEntity>> developersWorks)
     {
+        var randomIssueForKey = developersWorks.Value.FirstOrDefault();
+
+        if (randomIssueForKey == null)
+        {
+            return;
+        }
         //Подсчитать все переходы от (разработка -> ревью) к (ревью -> реализован)
         // + от (доработка -> ревью) к (ревью -> реализован)
 
@@ -108,7 +113,7 @@ public class Kpi5WorksheetHandler : WorksheetExportHandlerBase
             }
         }
 
-
+        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, randomIssueForKey.ProjectKey);
         CurrentWorksheet.SetValue(currentRow, authorNameColumn, developersWorks.Key.Name);
         var allIssueCount = developersWorks.Value.Count;
         CurrentWorksheet.SetValue(currentRow, issueCountColumn, allIssueCount);
@@ -127,6 +132,7 @@ public class Kpi5WorksheetHandler : WorksheetExportHandlerBase
     private void FillHeaders()
     {
         //Заголовки данных
+        CurrentWorksheet.SetValue(headerRow, projectKeyColumn, "Проект");
         CurrentWorksheet.SetValue(headerRow, authorNameColumn, "Сотрудник");
         CurrentWorksheet.SetValue(headerRow, issueCountColumn, "Количество задач");
         CurrentWorksheet.SetValue(headerRow, reviewTimeColumn, "Время по задачам в статусе ревью в часах");

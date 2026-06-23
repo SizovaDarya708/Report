@@ -1,9 +1,6 @@
-﻿using Atlassian.Jira;
-using OfficeOpenXml;
+﻿using OfficeOpenXml;
 using Reporter.Entities;
 using Reporter.Extensions;
-using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
 
 namespace Reporter.WorkSheetsHandlers.SprintReport;
 
@@ -41,24 +38,18 @@ public class Kpi6WorksheetHandler : WorksheetExportHandlerBase
 
     private void FillData()
     {
-        try
-        {
-            var allIssues = _sprintReportEntity.GetAllIssues();
-            var projectGroupedIssues = allIssues
-                .Where(x => x.Status == JiraConstants.Closed)
-                .GroupBy(issue => issue.ProjectKey)
-                .ToDictionary(k => k.Key, v => v.Select(i => i).ToList());
+        var allIssues = _sprintReportEntity.GetAllIssues();
+        var projectGroupedIssues = allIssues
+            .Where(x => x.Status == JiraConstants.Closed)
+            .GroupBy(issue => issue.ProjectKey)
+            .ToDictionary(k => k.Key, v => v.Select(i => i).ToList());
 
-            foreach (var projectIssues in projectGroupedIssues)
-            {
-                FillByProjects(projectIssues);
-            }
-        }
-        catch (Exception e)
+        foreach (var projectIssues in projectGroupedIssues)
         {
-            var a = 1;
+            FillByProjects(projectIssues);
         }
     }
+
     private void FillByProjects(KeyValuePair<string, List<IssueEntity>> projectIssues)
     {
         var projectKey = projectIssues.Key;

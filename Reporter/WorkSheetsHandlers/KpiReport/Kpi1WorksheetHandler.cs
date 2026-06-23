@@ -20,6 +20,7 @@ public class Kpi1WorksheetHandler : WorksheetExportHandlerBase
     private static int headerRow = 1;
     private int currentRow = 2;
 
+    private int projectKeyColumn = 1;
     private int authorNameColumn = 2;
     private int issueCountColumn = 3;
     private int issuesWithReworkCountColumn = 4;
@@ -73,6 +74,14 @@ public class Kpi1WorksheetHandler : WorksheetExportHandlerBase
     }
     private void FillReworksByDeveloper(KeyValuePair<IssueParticipantEntity, List<IssueEntity>> developersReworks)
     {
+        var randomIssueForKey = developersReworks.Value.FirstOrDefault();
+
+        if (randomIssueForKey == null)
+        {
+            return;        
+        }
+
+        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, randomIssueForKey.ProjectKey);
         CurrentWorksheet.SetValue(currentRow, authorNameColumn, developersReworks.Key.Name);
         var allIssueCount = developersReworks.Value.Count;
         CurrentWorksheet.SetValue(currentRow, issueCountColumn, allIssueCount);
@@ -109,6 +118,7 @@ public class Kpi1WorksheetHandler : WorksheetExportHandlerBase
     private void FillHeaders()
     {
         //Заголовки данных
+        CurrentWorksheet.SetValue(headerRow, projectKeyColumn, "Проект");
         CurrentWorksheet.SetValue(headerRow, authorNameColumn, "Сотрудник");
         CurrentWorksheet.SetValue(headerRow, issueCountColumn, "Количество задач");
         CurrentWorksheet.SetValue(headerRow, issuesWithReworkCountColumn, "Количество задач с доработками");

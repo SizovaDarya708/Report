@@ -1,5 +1,4 @@
-﻿using Atlassian.Jira;
-using OfficeOpenXml;
+﻿using OfficeOpenXml;
 using Reporter.Entities;
 using Reporter.Extensions;
 
@@ -25,6 +24,7 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
     private static int headerRow = 1;
     private int currentRow = 2;
 
+    private int projectKeyColumn = 1;
     private int participantColumn = 2;
     private int AccuracyColumn = 3;
     private int pWeightedColumn = 4;
@@ -76,6 +76,13 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
     }
     private void FillStorypointAccuracyByDeveloper(IssueParticipantEntity participant, List<IssueEntity> issues)
     {
+        var randomIssueForKey = issues.FirstOrDefault();
+
+        if (randomIssueForKey == null)
+        {
+            return;
+        }
+
         var eS_i = 0;
         var rHtoSbyIssues = new List<decimal>();
         foreach (var issue in issues)
@@ -149,6 +156,7 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
         var pWeighted = (eS_iP_i/eS_i);
         var pFinal = pWeighted * (Accuracy / 100);
 
+        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, randomIssueForKey.ProjectKey);
         CurrentWorksheet.SetValue(currentRow, participantColumn, participant.Name);
         CurrentWorksheet.SetValue(currentRow, AccuracyColumn, Accuracy);
         CurrentWorksheet.SetValue(currentRow, pWeightedColumn, pWeighted);
@@ -165,6 +173,7 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
     private void FillHeaders()
     {
         //Заголовки данных
+        CurrentWorksheet.SetValue(headerRow, projectKeyColumn, "Проект");
         CurrentWorksheet.SetValue(headerRow, participantColumn, "Автор");
         CurrentWorksheet.SetValue(headerRow, AccuracyColumn, "Точность");
         CurrentWorksheet.SetValue(headerRow, pWeightedColumn, "Взвешенная производительность");

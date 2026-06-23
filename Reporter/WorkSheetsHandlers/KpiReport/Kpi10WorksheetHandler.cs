@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using Atlassian.Jira;
+using OfficeOpenXml;
 using Reporter.Entities;
 using Reporter.Extensions;
 
@@ -23,6 +24,7 @@ public class Kpi10WorksheetHandler : WorksheetExportHandlerBase
     private static int headerRow = 1;
     private int currentRow = 2;
 
+    private int projectKeyColumn = 1;
     private int authorNameColumn = 2;
     private int resolveIssueTimeColumn = 3;
     private int reworkTimeSpentColumn = 4;
@@ -75,6 +77,14 @@ public class Kpi10WorksheetHandler : WorksheetExportHandlerBase
 
     private void FillReworksByDeveloper(KeyValuePair<IssueParticipantEntity, List<IssueEntity>> issuesPerParticipant)
     {
+        var randomIssueForKey = issuesPerParticipant.Value.FirstOrDefault();
+
+        if (randomIssueForKey == null)
+        {
+            return;
+        }
+
+        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, randomIssueForKey.ProjectKey);
         CurrentWorksheet.SetValue(currentRow, authorNameColumn, issuesPerParticipant.Key.Name);
 
         //Посчитать всю работу над задачами по сотруднику
@@ -108,6 +118,7 @@ public class Kpi10WorksheetHandler : WorksheetExportHandlerBase
     private void FillHeaders()
     {
         //Заголовки данных
+        CurrentWorksheet.SetValue(headerRow, projectKeyColumn, "Проект");
         CurrentWorksheet.SetValue(headerRow, authorNameColumn, "Сотрудник");
         CurrentWorksheet.SetValue(headerRow, resolveIssueTimeColumn, "Время на решение задачи");
         CurrentWorksheet.SetValue(headerRow, reworkTimeSpentColumn, "Время на доработки");

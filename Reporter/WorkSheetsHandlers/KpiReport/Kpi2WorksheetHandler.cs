@@ -20,12 +20,12 @@ public class Kpi2WorksheetHandler : WorksheetExportHandlerBase
     private static int headerRow = 1;
     private int currentRow = 2;
 
-    private int projectNameColumn = 2;
-    private int totalClosedIssuesColumn = 3;
-    private int ResolveIssuesTimeColumn = 4;
-    private int AverageResolvingTimeForIssues = 5;
-    private int periodStartDateColumn = 6;
-    private int periodEndDateColumn = 7;
+    private int projectNameColumn = 1;
+    private int totalClosedIssuesColumn = 2;
+    private int ResolveIssuesTimeColumn = 3;
+    private int AverageResolvingTimeForIssues = 4;
+    private int periodStartDateColumn = 5;
+    private int periodEndDateColumn = 6;
 
     #endregion
 

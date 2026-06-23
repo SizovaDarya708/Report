@@ -45,7 +45,10 @@ public static class JiraConstants
     public const string EstimateTypeReview = "Ревью";
     public const string EstimateTypeAnaliz = "Анализ";
     public const string EstimateTypeTesting = "Тестирование";
-    
 
+    #endregion
+
+    #region Labels
+    public const string TechDutyLabel = "ТехДолг";
     #endregion
 }
