@@ -28,17 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            TabControl Sprint;
-            tabPage1 = new TabPage();
             PrintReportButton = new Button();
-            tabPage2 = new TabPage();
             button1 = new Button();
             label1 = new Label();
-
             dateTimeIssuesStartInput = new DateTimePicker();
-            var currentDate = DateTime.Now;
-            dateTimeIssuesStartInput.Value = new DateTime(day: 1, month: currentDate.Month, year: currentDate.Year);
-
             dateTimeIssuesEndInput = new DateTimePicker();
             LoginTextInput = new TextBox();
             PasswordJiraTextInput = new TextBox();
@@ -56,62 +49,23 @@
             label3 = new Label();
             label4 = new Label();
             label5 = new Label();
-            Sprint = new TabControl();
-            Sprint.SuspendLayout();
-            tabPage1.SuspendLayout();
-            tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
             SuspendLayout();
             // 
-            // Sprint
-            // 
-            Sprint.Controls.Add(tabPage1);
-            Sprint.Controls.Add(tabPage2);
-            Sprint.Location = new Point(303, 26);
-            Sprint.Name = "Sprint";
-            Sprint.SelectedIndex = 0;
-            Sprint.Size = new Size(599, 204);
-            Sprint.TabIndex = 18;
-            // 
-            // tabPage1
-            // 
-            tabPage1.Controls.Add(PrintReportButton);
-            tabPage1.Location = new Point(4, 29);
-            tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(591, 171);
-            tabPage1.TabIndex = 0;
-            tabPage1.Text = "Отчет по спринту";
-            tabPage1.UseVisualStyleBackColor = true;
-            tabPage1.Click += tabPage1_Click;
-            // 
             // PrintReportButton
             // 
-            PrintReportButton.Location = new Point(25, 111);
+            PrintReportButton.Location = new Point(523, 68);
             PrintReportButton.Margin = new Padding(3, 4, 3, 4);
             PrintReportButton.Name = "PrintReportButton";
             PrintReportButton.Size = new Size(229, 31);
             PrintReportButton.TabIndex = 3;
-            PrintReportButton.Text = "Печать отчета";
+            PrintReportButton.Text = "Печать отчета спринта";
             PrintReportButton.UseVisualStyleBackColor = true;
             PrintReportButton.Click += PrintReportButton_Click;
             // 
-            // tabPage2
-            // 
-            tabPage2.Controls.Add(button1);
-            tabPage2.Location = new Point(4, 29);
-            tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3);
-            tabPage2.RightToLeft = RightToLeft.Yes;
-            tabPage2.Size = new Size(591, 171);
-            tabPage2.TabIndex = 1;
-            tabPage2.Text = "KPI ";
-            tabPage2.UseVisualStyleBackColor = true;
-            tabPage2.Click += tabPage2_Click;
-            // 
             // button1
             // 
-            button1.Location = new Point(23, 13);
+            button1.Location = new Point(355, 68);
             button1.Name = "button1";
             button1.Size = new Size(134, 29);
             button1.TabIndex = 0;
@@ -178,7 +132,7 @@
             // 
             // JiraFilterTextInput
             // 
-            JiraFilterTextInput.Location = new Point(430, 282);
+            JiraFilterTextInput.Location = new Point(430, 288);
             JiraFilterTextInput.Margin = new Padding(3, 4, 3, 4);
             JiraFilterTextInput.Multiline = true;
             JiraFilterTextInput.Name = "JiraFilterTextInput";
@@ -217,7 +171,7 @@
             // StatusTextOutputLabel
             // 
             StatusTextOutputLabel.AutoSize = true;
-            StatusTextOutputLabel.Location = new Point(34, 523);
+            StatusTextOutputLabel.Location = new Point(34, 451);
             StatusTextOutputLabel.Name = "StatusTextOutputLabel";
             StatusTextOutputLabel.Size = new Size(272, 20);
             StatusTextOutputLabel.TabIndex = 11;
@@ -226,10 +180,11 @@
             // 
             // ErrorOutputTextBox
             // 
-            ErrorOutputTextBox.Location = new Point(34, 547);
+            ErrorOutputTextBox.Location = new Point(34, 486);
             ErrorOutputTextBox.Margin = new Padding(3, 4, 3, 4);
+            ErrorOutputTextBox.Multiline = true;
             ErrorOutputTextBox.Name = "ErrorOutputTextBox";
-            ErrorOutputTextBox.Size = new Size(244, 27);
+            ErrorOutputTextBox.Size = new Size(350, 101);
             ErrorOutputTextBox.TabIndex = 12;
             ErrorOutputTextBox.TextChanged += ErrorOutputTextBox_TextChanged;
             // 
@@ -246,7 +201,7 @@
             // 
             // FileExplorerButton
             // 
-            FileExplorerButton.Location = new Point(750, 545);
+            FileExplorerButton.Location = new Point(755, 515);
             FileExplorerButton.Margin = new Padding(3, 4, 3, 4);
             FileExplorerButton.Name = "FileExplorerButton";
             FileExplorerButton.Size = new Size(123, 31);
@@ -257,18 +212,17 @@
             // 
             // FileDirectoryName
             // 
-            FileDirectoryName.Location = new Point(376, 547);
+            FileDirectoryName.Location = new Point(430, 462);
             FileDirectoryName.Margin = new Padding(3, 4, 3, 4);
             FileDirectoryName.Name = "FileDirectoryName";
-            FileDirectoryName.Size = new Size(337, 27);
+            FileDirectoryName.Size = new Size(448, 27);
             FileDirectoryName.TabIndex = 16;
-            FileDirectoryName.Text = "C:\\";
             FileDirectoryName.TextChanged += textBox3_TextChanged;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(376, 523);
+            label3.Location = new Point(430, 420);
             label3.Name = "label3";
             label3.Size = new Size(243, 20);
             label3.TabIndex = 17;
@@ -299,9 +253,10 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(914, 600);
+            Controls.Add(button1);
+            Controls.Add(PrintReportButton);
             Controls.Add(label5);
             Controls.Add(label4);
-            Controls.Add(Sprint);
             Controls.Add(label1);
             Controls.Add(label3);
             Controls.Add(dateTimeIssuesStartInput);
@@ -321,9 +276,6 @@
             Name = "Form1";
             Text = "Выгрузка задач Jira";
             Load += Form1_Load;
-            Sprint.ResumeLayout(false);
-            tabPage1.ResumeLayout(false);
-            tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -349,9 +301,6 @@
         private Button FileExplorerButton;
         private Label label3;
         private TextBox FileDirectoryName;
-        private TabControl Sprint;
-        private TabPage tabPage1;
-        private TabPage tabPage2;
         private Button button1;
         private Label label5;
         private Label label4;

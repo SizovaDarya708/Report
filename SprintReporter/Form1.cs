@@ -41,18 +41,15 @@ namespace SprintReporter
             {
                 JiraLoginButton.BackColor = Color.Red;
             }
-        }
-
+        }       
 
         private async void PrintReportButton_Click(object sender, EventArgs e)
         {
             try
             {
-                ErrorOutputTextBox.Text = string.Empty;
-                if (jiraService == null)
+                if (!IsValidForm())
                 {
-                    ErrorOutputTextBox.Text = "Необходима авторизация в Jira";
-                    return;
+                    return;                
                 }
 
                 sprintReportService = new SprintReportService(jiraService);
@@ -152,10 +149,8 @@ namespace SprintReporter
         {
             try
             {
-                ErrorOutputTextBox.Text = string.Empty;
-                if (jiraService == null)
+                if (!IsValidForm())
                 {
-                    ErrorOutputTextBox.Text = "Необходима авторизация в Jira";
                     return;
                 }
 
@@ -196,6 +191,32 @@ namespace SprintReporter
         private void dateTimeIssuesStartInput_ValueChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private bool IsValidForm()
+        {
+            ErrorOutputTextBox.Text = string.Empty;
+            return IsValidAuthorization() && IsValidFileDirectoryName();        
+        }
+
+        private bool IsValidAuthorization()
+        {
+            if (jiraService == null)
+            {
+                ErrorOutputTextBox.Text = "Необходима авторизация в Jira";
+                return false;
+            }
+            return true;
+        }
+
+        private bool IsValidFileDirectoryName()
+        {
+            if (FileDirectoryName.Text == string.Empty || FileDirectoryName == null)
+            {
+                ErrorOutputTextBox.Text = "Выберите папку для загрузки отчета";
+                return false;
+            }
+            return true;
         }
     }
 }
