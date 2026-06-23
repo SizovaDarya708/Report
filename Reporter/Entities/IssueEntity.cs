@@ -21,7 +21,7 @@ public class IssueEntity
         Priority = issue.Priority.Name;
         TimeSpentInSeconds = issue.TimeTrackingData?.TimeSpentInSeconds;
         LastAssignee = issue.AssigneeUser != null ? new IssueParticipantEntity(issue.AssigneeUser) : null;
-
+        Labels = issue.Labels.ToList();
         //API не дает корректные данные, проставляется в IssueBase через отдельный запрос
         //TimeEstimateInSeconds = issue.TimeTrackingData?.OriginalEstimateInSeconds;
         //TimeRemainingInSeconds = issue.TimeTrackingData?.RemainingEstimateInSeconds; 
@@ -84,6 +84,8 @@ public class IssueEntity
     public string Type { get; set; } = string.Empty;
 
     public IssueParticipantEntity? LastAssignee { get; set; }
+
+    public List<string> Labels { get; set; } = new List<string>();
 
     public long? TimeSpentInSeconds { get; set; }
 

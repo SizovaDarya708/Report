@@ -11,7 +11,7 @@ public class ExcelKpiReportGenerator
     private string thirdListName = "KPI 3";
     private string fourthListName = "KPI 4";
     private string fifthListName = "KPI 5";
-
+    private string sixthListName = "KPI 6";
 
     private string tenthListName = "KPI 10";
 
@@ -43,6 +43,10 @@ public class ExcelKpiReportGenerator
             Kpi5WorksheetHandler fifthListHandler =
                 new Kpi5WorksheetHandler(package, fifthListName, sprintReportEntity);
             fifthListHandler.FillReportData();
+
+            Kpi6WorksheetHandler sixthListHandler =
+                new Kpi6WorksheetHandler(package, sixthListName, sprintReportEntity);
+            sixthListHandler.FillReportData();
 
             Kpi10WorksheetHandler tenthListHandler =
                 new Kpi10WorksheetHandler(package, tenthListName, sprintReportEntity);
