@@ -149,7 +149,7 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
             }
 
             eS_iP_i += (decimal)s_i * p_i.Value;
-            eAcuracity += h_i - (r * (decimal)s_i);
+            eAcuracity += Math.Abs(h_i - (r * (decimal)s_i));
         }
 
         var Accuracy = (1 - (eAcuracity/ rES_i)) * 100;

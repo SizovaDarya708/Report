@@ -20,7 +20,8 @@ public class BaseReportInput
             $"((updatedDate >= '{StartDate.AddDays(-3).ToString("yyyy-MM-dd")}' " +
             $"AND updatedDate < '{EndDate.AddDays(3).ToString("yyyy-MM-dd")}') OR " +
             $"(createdDate >= '{StartDate.AddDays(-7).ToString("yyyy-MM-dd")}' " +
-            $"AND createdDate < '{EndDate.AddDays(1).ToString("yyyy-MM-dd")}'))";
+            $"AND createdDate < '{EndDate.AddDays(1).ToString("yyyy-MM-dd")}'))" +
+            $"AND status = 'Закрыт'";
 
         if (!string.IsNullOrEmpty(AdditionalJiraFilter))
         {
