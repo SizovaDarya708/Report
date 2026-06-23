@@ -192,5 +192,10 @@ namespace SprintReporter
         {
 
         }
+
+        private void dateTimeIssuesStartInput_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

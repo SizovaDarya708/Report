@@ -34,7 +34,11 @@
             tabPage2 = new TabPage();
             button1 = new Button();
             label1 = new Label();
+
             dateTimeIssuesStartInput = new DateTimePicker();
+            var currentDate = DateTime.Now;
+            dateTimeIssuesStartInput.Value = new DateTime(day: 1, month: currentDate.Month, year: currentDate.Year);
+
             dateTimeIssuesEndInput = new DateTimePicker();
             LoginTextInput = new TextBox();
             PasswordJiraTextInput = new TextBox();
@@ -132,6 +136,7 @@
             dateTimeIssuesStartInput.Name = "dateTimeIssuesStartInput";
             dateTimeIssuesStartInput.Size = new Size(228, 27);
             dateTimeIssuesStartInput.TabIndex = 4;
+            dateTimeIssuesStartInput.ValueChanged += dateTimeIssuesStartInput_ValueChanged;
             // 
             // dateTimeIssuesEndInput
             // 
