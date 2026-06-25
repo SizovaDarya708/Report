@@ -51,4 +51,10 @@ public static class JiraConstants
     #region Labels
     public const string TechDutyLabel = "ТехДолг";
     #endregion
+
+    #region Приоритет
+    public const string Urgent = "Неотложный";
+
+    public const string High = "Высокий";
+    #endregion
 }
