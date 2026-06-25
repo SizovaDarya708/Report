@@ -29,7 +29,7 @@ public class JiraClientService : IJiraService
     
     public async Task<Issue[]> GetIssuesForReportAsync(BaseReportInput input, CancellationToken cancellationToken)
     {
-        var jql = $"project = \"Планы по достижению показателей ГП РФ\" AND " + input.GetJql();
+        var jql = input.GetJql();
 
         var issuePages = await client.Issues.GetIssuesFromJqlAsync(jql, 1000, 0, cancellationToken);
 

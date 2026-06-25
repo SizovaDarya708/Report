@@ -61,7 +61,8 @@ namespace SprintReporter
                         EndDate = dateTimeIssuesEndInput.Value,
                         AdditionalJiraFilter = JiraFilterTextInput.Text,
                         FilePath = FileDirectoryName.Text,
-                        ProjectKeys = projectKeysList.CheckedItems.Cast<string>().ToList()
+                        ProjectKeys = projectKeysList.CheckedItems.Cast<string>().ToList(),
+                        OnlyClosedIssues = checkBox1.Checked
                     });
                 await reportTask;
                 SystemSounds.Beep.Play();
@@ -164,7 +165,8 @@ namespace SprintReporter
                         EndDate = dateTimeIssuesEndInput.Value,
                         AdditionalJiraFilter = JiraFilterTextInput.Text,
                         FilePath = FileDirectoryName.Text,
-                        ProjectKeys = projectKeysList.CheckedItems.Cast<string>().ToList()
+                        ProjectKeys = projectKeysList.CheckedItems.Cast<string>().ToList(),
+                        OnlyClosedIssues = checkBox1.Checked
                     });
                 await reportTask;
                 SystemSounds.Beep.Play();
@@ -256,6 +258,11 @@ namespace SprintReporter
 
             var currentDate = DateTime.Now;
             dateTimeIssuesStartInput.Value = new DateTime(day: 1, month: currentDate.Month, year: currentDate.Year);
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

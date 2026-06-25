@@ -51,6 +51,7 @@
             label5 = new Label();
             projectKeysList = new CheckedListBox();
             label6 = new Label();
+            checkBox1 = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
             SuspendLayout();
             // 
@@ -134,7 +135,7 @@
             // 
             // JiraFilterTextInput
             // 
-            JiraFilterTextInput.Location = new Point(430, 288);
+            JiraFilterTextInput.Location = new Point(430, 349);
             JiraFilterTextInput.Margin = new Padding(3, 4, 3, 4);
             JiraFilterTextInput.Multiline = true;
             JiraFilterTextInput.Name = "JiraFilterTextInput";
@@ -144,7 +145,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(430, 252);
+            label2.Location = new Point(430, 307);
             label2.Name = "label2";
             label2.Size = new Size(220, 20);
             label2.TabIndex = 8;
@@ -203,7 +204,7 @@
             // 
             // FileExplorerButton
             // 
-            FileExplorerButton.Location = new Point(755, 515);
+            FileExplorerButton.Location = new Point(755, 556);
             FileExplorerButton.Margin = new Padding(3, 4, 3, 4);
             FileExplorerButton.Name = "FileExplorerButton";
             FileExplorerButton.Size = new Size(123, 31);
@@ -214,7 +215,7 @@
             // 
             // FileDirectoryName
             // 
-            FileDirectoryName.Location = new Point(430, 462);
+            FileDirectoryName.Location = new Point(430, 521);
             FileDirectoryName.Margin = new Padding(3, 4, 3, 4);
             FileDirectoryName.Name = "FileDirectoryName";
             FileDirectoryName.Size = new Size(448, 27);
@@ -224,7 +225,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(430, 420);
+            label3.Location = new Point(430, 486);
             label3.Name = "label3";
             label3.Size = new Size(243, 20);
             label3.TabIndex = 17;
@@ -250,12 +251,12 @@
             label5.Text = "Дата окончания";
             label5.Click += label5_Click;
             // 
-            // checkedListBox1
+            // projectKeysList
             // 
             projectKeysList.FormattingEnabled = true;
             projectKeysList.Items.AddRange(new object[] { "GP", "GPREGION", "GPBOX" });
             projectKeysList.Location = new Point(297, 68);
-            projectKeysList.Name = "checkedListBox1";
+            projectKeysList.Name = "projectKeysList";
             projectKeysList.Size = new Size(150, 114);
             projectKeysList.TabIndex = 21;
             projectKeysList.SelectedIndexChanged += checkedListBox1_SelectedIndexChanged_1;
@@ -270,11 +271,25 @@
             label6.Text = "Выбор проектов выгрузки";
             label6.Click += label6_Click;
             // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Checked = true;
+            checkBox1.CheckState = CheckState.Checked;
+            checkBox1.Location = new Point(430, 252);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(280, 24);
+            checkBox1.TabIndex = 23;
+            checkBox1.Text = "Выгружать только закрытые задачи";
+            checkBox1.UseVisualStyleBackColor = true;
+            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(914, 600);
+            Controls.Add(checkBox1);
             Controls.Add(label6);
             Controls.Add(projectKeysList);
             Controls.Add(button1);
@@ -330,5 +345,6 @@
         private Label label4;
         private Label label6;
         private CheckedListBox projectKeysList;
+        private CheckBox checkBox1;
     }
 }
