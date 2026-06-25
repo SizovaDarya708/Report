@@ -13,8 +13,8 @@ public class ExcelKpiReportGenerator
     private string _5ListName = "KPI 5";
     private string _6ListName = "KPI 6";
     private string _7ListName = "KPI 8";
-
-    private string tenthListName = "KPI 10";
+    private string _8ListName = "KPI 10";
+    private string _9ListName = "KPI 11";
 
     public void GenerateReport(string filePath, SprintReportEntity sprintReportEntity)
     {
@@ -54,8 +54,12 @@ public class ExcelKpiReportGenerator
             eightListHandler.FillReportData();
 
             Kpi10WorksheetHandler tenthListHandler =
-                new Kpi10WorksheetHandler(package, tenthListName, sprintReportEntity);
+                new Kpi10WorksheetHandler(package, _8ListName, sprintReportEntity);
             tenthListHandler.FillReportData();
+
+            Kpi11WorksheetHandler elevenListHandler =
+                new Kpi11WorksheetHandler(package, _9ListName, sprintReportEntity);
+            elevenListHandler.FillReportData();
 
             package.Save();
         }

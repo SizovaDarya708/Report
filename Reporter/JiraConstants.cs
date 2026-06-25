@@ -37,6 +37,8 @@ public static class JiraConstants
     #region Типы задач
     public const string Bug = "Ошибка";
     public const string Incident = "Инцидент";
+    public const string Features = "Улучшение";
+    public const string NewDevelop = "Новая разработка";
     #endregion
 
     #region Виды работ для списания
