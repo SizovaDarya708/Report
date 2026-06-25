@@ -21,12 +21,11 @@ public class Kpi5WorksheetHandler : WorksheetExportHandlerBase
     private int currentRow = 2;
 
     private int projectKeyColumn = 1;
-    private int authorNameColumn = 2;
-    private int issueCountColumn = 3;
-    private int reviewTimeColumn = 4;
-    private int averageReviewTimeColumn = 5;
-    private int periodStartDateColumn = 6;
-    private int periodEndDateColumn = 7;
+    private int issueCountColumn = 2;
+    private int reviewTimeColumn = 3;
+    private int averageReviewTimeColumn = 4;
+    private int periodStartDateColumn = 5;
+    private int periodEndDateColumn = 6;
 
     #endregion
 
@@ -44,48 +43,24 @@ public class Kpi5WorksheetHandler : WorksheetExportHandlerBase
 
         //TODO взять задачи, которые вообще интересуют issuetype in (Инцидент, Bug)
 
-        var allIssuesInfo = allIssues
+        var projects = allIssues
             .Where(i => i.Type == JiraConstants.Incident || i.Type == JiraConstants.Bug)
-            .Where(i => i.Status.ToLower() == JiraConstants.Closed.ToLower());
+            .Where(i => i.Status.ToLower() == JiraConstants.Closed.ToLower())
+            .GroupBy(issue => issue.ProjectKey)
+            .ToDictionary(k => k.Key, v => v.Select(i => i).ToList());
 
-        //группируем задачи по разработчику
-        foreach (var issue in allIssuesInfo)
+        foreach (var project in projects)
         {
-            var developer = issue.GetParticipantByType(EmployeeType.Developer);
-
-            if (developer == null)
-            {
-                continue;
-            }
-
-            if (developerPerIssues.ContainsKey(developer))
-            {
-                developerPerIssues[developer].Add(issue);
-            }
-            else
-            {
-                developerPerIssues.Add(developer, new List<IssueEntity> { issue });
-            }
-        }
-
-        foreach (var developer in developerPerIssues)
-        {
-            FillDataByDeveloper(developer);
+            FillDataByProject(project);
         }
     }
-    private void FillDataByDeveloper(KeyValuePair<IssueParticipantEntity, List<IssueEntity>> developersWorks)
-    {
-        var randomIssueForKey = developersWorks.Value.FirstOrDefault();
-
-        if (randomIssueForKey == null)
-        {
-            return;
-        }
+    private void FillDataByProject(KeyValuePair<string, List<IssueEntity>> projectIssues)
+    {        
         //Подсчитать все переходы от (разработка -> ревью) к (ревью -> реализован)
         // + от (доработка -> ревью) к (ревью -> реализован)
 
         var allReviewTime = TimeSpan.Zero;
-        foreach (var issue in developersWorks.Value)
+        foreach (var issue in projectIssues.Value)
         {
             var statusChangedChangelogs = issue.ChangeLogs
                 .Where(x => x.Items.Any(
@@ -113,9 +88,8 @@ public class Kpi5WorksheetHandler : WorksheetExportHandlerBase
             }
         }
 
-        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, randomIssueForKey.ProjectKey);
-        CurrentWorksheet.SetValue(currentRow, authorNameColumn, developersWorks.Key.Name);
-        var allIssueCount = developersWorks.Value.Count;
+        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, projectIssues.Key);
+        var allIssueCount = projectIssues.Value.Count;
         CurrentWorksheet.SetValue(currentRow, issueCountColumn, allIssueCount);
         CurrentWorksheet.SetValue(currentRow, reviewTimeColumn, allReviewTime.TotalHours);
         var averageReviewTime = allReviewTime.TotalHours == 0 ? allReviewTime.TotalHours : (allReviewTime.TotalHours / allIssueCount);
@@ -133,7 +107,6 @@ public class Kpi5WorksheetHandler : WorksheetExportHandlerBase
     {
         //Заголовки данных
         CurrentWorksheet.SetValue(headerRow, projectKeyColumn, "Проект");
-        CurrentWorksheet.SetValue(headerRow, authorNameColumn, "Сотрудник");
         CurrentWorksheet.SetValue(headerRow, issueCountColumn, "Количество задач");
         CurrentWorksheet.SetValue(headerRow, reviewTimeColumn, "Время по задачам в статусе ревью в часах");
         CurrentWorksheet.SetValue(headerRow, averageReviewTimeColumn, "Среднее время прохождения Ревью");
