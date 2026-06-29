@@ -99,9 +99,7 @@ public class Kpi1WorksheetHandler : WorksheetExportHandlerBase
                 continue;            
             }
 
-            var allReworksInPeriodCount = issueReworks.Count();
-
-            allReworksCount += allReworksInPeriodCount;                    
+            allReworksCount += 1;                    
         }
 
         CurrentWorksheet.SetValue(currentRow, issuesWithReworkCountColumn, allReworksCount);
