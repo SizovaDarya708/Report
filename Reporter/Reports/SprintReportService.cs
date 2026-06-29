@@ -36,8 +36,8 @@ public class SprintReportService : ISprintReportService
         reportEntity.SetParticipantDepartment(departments);
 
         //Получение и заполнение данных о списаниях времени (не приходит по API)
-        var jiraIdentifiers = issues.Select(x => x.JiraIdentifier).ToArray();
-        var estimateDto = await _jiraService.GetEstimateDataPerIssuesAsync(jiraIdentifiers, cancellationToken);
+        var jiraKeys = reportEntity.GetAllIssueInfoForApiRequest();
+        var estimateDto = await _jiraService.GetEstimateDataPerIssuesAsync(jiraKeys, cancellationToken);
         reportEntity.SetEstimateTimeData(estimateDto);
 
         _excelReportGenerator.GenerateReport(sprintReportDataInput.FilePath, reportEntity);

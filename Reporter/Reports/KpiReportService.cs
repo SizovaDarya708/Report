@@ -25,17 +25,8 @@ public class KpiReportService : IKpiReportService
 
         await reportEntity.FillDataAsync(issues);
 
-        ////Заполнение данных об Отделах сотрудников (не приходит по API)
-        //var userLogins = reportEntity.IssueParticipants
-        //    .Where(x => x.IsActual)
-        //    .Select(x => x.UserLogin)
-        //    .Distinct()
-        //    .ToArray();
-        //var departments = await _jiraService.GetUsersDepartmentAsync(userLogins, cancellationToken);
-        //reportEntity.SetParticipantDepartment(departments);
-
-        //Получение и заполнение данных о списаниях времени (не приходит по API)
-        var jiraKeys = issues.Select(x => x.Key.Value).ToArray();
+        //Получение и заполнение данных о списаниях времени (не приходит по API)        
+        var jiraKeys = reportEntity.GetAllIssueInfoForApiRequest();
         var estimateDto = await _jiraService.GetEstimateDataPerIssuesAsync(jiraKeys, cancellationToken);
         reportEntity.SetEstimateTimeData(estimateDto);
 

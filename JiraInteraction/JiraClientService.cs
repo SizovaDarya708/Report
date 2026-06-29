@@ -58,7 +58,7 @@ public class JiraClientService : IJiraService
         return dict;
     }
 
-    public async Task<Dictionary<string, List<EstimateByWorklogTypeDto>>> GetEstimateDataPerIssuesAsync(string[] jiraKeys, CancellationToken cancellationToken)
+    public async Task<Dictionary<string, List<EstimateByWorklogTypeDto>>> GetEstimateDataPerIssuesAsync(IssueApiRequestDto[] jiraKeys, CancellationToken cancellationToken)
     {
         var estimatesPerIssue = new Dictionary<string, List<EstimateByWorklogTypeDto>>();
 
@@ -71,10 +71,13 @@ public class JiraClientService : IJiraService
         var wklogIdPattern = "data-worklog\\s*=\\s*[\"'](\\d+)[\"']";
         var wkIdRg = new Regex(wklogIdPattern);
 
-        await Parallel.ForEachAsync(jiraKeys, async (key, ct) =>
+        await Parallel.ForEachAsync(jiraKeys, async (issue, ct) =>
         {
             var info = await client.RestClient.RestSharpClient.ExecuteGetAsync(
-            new RestRequest($"/secure/TempoIssueBoard!report.jspa?v=1&issue={key}&show_worklog_attribute:_Тип_=true", Method.GET));
+            new RestRequest($"/secure/TempoIssueBoard!report.jspa?v=1&issue={issue.Key}&show_worklog_attribute:_Тип_=true" +
+            $"&periodType=FLEX&periodView=DATES&from={issue.CreatedDate.ToString("yyyy-MM-dd")}&to={DateTime.Now.ToString("yyyy-MM-dd")}",
+            Method.GET));
+            
             if (info.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var estimates = new List<EstimateByWorklogTypeDto>();
@@ -93,7 +96,7 @@ public class JiraClientService : IJiraService
 
                     estimates.Add(new EstimateByWorklogTypeDto(wkIdStr, workTypeStr));
                 }
-                estimatesPerIssue.TryAdd(key, estimates);
+                estimatesPerIssue.TryAdd(issue.Key, estimates);
             }            
         });
 

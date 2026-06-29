@@ -1,5 +1,6 @@
 ﻿using Atlassian.Jira;
 using JiraInteraction.Dtos;
+using Reporter.Dtos;
 using Reporter.Extensions;
 
 namespace Reporter.Entities;
@@ -50,6 +51,13 @@ public class SprintReportEntity
             .ToList();
         sprintIssues.AddRange(WithoutSprintPool.Issues);
         return sprintIssues;
+    }
+
+    public JiraInteraction.Dtos.IssueApiRequestDto[] GetAllIssueInfoForApiRequest()
+    {
+        var allIssues = GetAllIssues();
+        var info = allIssues.Select(x => new JiraInteraction.Dtos.IssueApiRequestDto(x.Key, x.CreateDate)).ToArray();
+        return info;
     }
 
     public void SetParticipantDepartment(Dictionary<string, string> loginsPerDepartments)

@@ -27,7 +27,7 @@ public class IssueEntity
         //TimeRemainingInSeconds = issue.TimeTrackingData?.RemainingEstimateInSeconds; 
         Resolution = issue.Resolution?.Name;
         ResolutionDate = issue.ResolutionDate;
-        CreateDate = issue.Created;
+        CreateDate = issue.Created ?? DateTime.Now;
         UpdateDate = issue.Updated;
 
         JiraIdentifier = issue.JiraIdentifier;
@@ -101,7 +101,7 @@ public class IssueEntity
 
     public DateTime? ResolutionDate {get; set;}
 
-    public DateTime? CreateDate { get; set;}
+    public DateTime CreateDate { get; set;}
 
     public DateTime? UpdateDate { get; set;}
 
