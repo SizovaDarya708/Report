@@ -94,11 +94,7 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
                 continue;            
             }
 
-            var h_i = issue.Estimates
-                .Where(e => e.WorkEstimateType != null)
-                .Where(e => DeveloperEstimateTypes.Contains(e.WorkEstimateType!.Value))
-                .Where(e => e.Worklog.TimeSpendInSeconds != null)
-                .Sum(e => (decimal)e.Worklog.TimeSpendInSeconds!.Value/60/60);
+            var h_i = issue.H_i();
                       
 
             if (h_i == null || h_i == 0)
@@ -131,11 +127,7 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
                 continue;
             }
 
-            var h_i = issue.Estimates
-                .Where(e => e.WorkEstimateType != null)
-                .Where(e => DeveloperEstimateTypes.Contains(e.WorkEstimateType!.Value))
-                .Where(e => e.Worklog.TimeSpendInSeconds != null)
-                .Sum(e => (decimal)e.Worklog.TimeSpendInSeconds!.Value / 60 / 60);
+            var h_i = issue.H_i();
 
             if (h_i == null || h_i == 0)
             {
@@ -152,7 +144,9 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
             eAcuracity += Math.Abs(h_i - (r * (decimal)s_i));
         }
 
-        var Accuracy = (1 - (eAcuracity/ rES_i)) * 100;
+        var Accuracy = 1; // пока 100%. Надо взять из KPI3. Вообще вопрос стоит ли брать? Или как правильно учесть ошибку оценки в производительности?
+        //скорее всего надо умножать на оценку раньше, чем ссчитается 
+        
         var pWeighted = (eS_iP_i/eS_i);
         var pFinal = pWeighted * (Accuracy / 100);
 

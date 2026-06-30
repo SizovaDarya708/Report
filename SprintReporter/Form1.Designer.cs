@@ -254,7 +254,7 @@
             // projectKeysList
             // 
             projectKeysList.FormattingEnabled = true;
-            projectKeysList.Items.AddRange(new object[] { "GP", "GPREGION", "GPBOX" });
+            projectKeysList.Items.AddRange(new object[] { "GP", "GPREGION", "GPBOX", "RGPBOX", "DMBOX", "UNP", "UNP2" });
             projectKeysList.Location = new Point(297, 68);
             projectKeysList.Name = "projectKeysList";
             projectKeysList.Size = new Size(150, 114);

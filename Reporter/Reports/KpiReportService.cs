@@ -25,7 +25,7 @@ public class KpiReportService : IKpiReportService
 
         await reportEntity.FillDataAsync(issues);
 
-        //Получение и заполнение данных о списаниях времени (не приходит по API)        
+        //Получение и заполнение данных о списаниях времени (не приходит по API)
         var jiraKeys = reportEntity.GetAllIssueInfoForApiRequest();
         var estimateDto = await _jiraService.GetEstimateDataPerIssuesAsync(jiraKeys, cancellationToken);
         reportEntity.SetEstimateTimeData(estimateDto);

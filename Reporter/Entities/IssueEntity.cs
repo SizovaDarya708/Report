@@ -7,7 +7,8 @@ namespace Reporter.Entities;
 
 public class IssueEntity
 {
-    public IssueEntity() { }
+    private List<WorkEstimateTypeEnum> DeveloperEstimateTypes =
+        new List<WorkEstimateTypeEnum> { WorkEstimateTypeEnum.Develop, WorkEstimateTypeEnum.Rework, WorkEstimateTypeEnum.Review };
 
     public IssueEntity(Issue issue)
     {
@@ -61,6 +62,16 @@ public class IssueEntity
         var spentTime = Workflows.Select(x => x.TimeSpendInSeconds).Sum();
         return spentTime;
     }
+
+    public decimal H_i()
+    {
+        return Estimates
+            .Where(e => e.WorkEstimateType != null)
+            .Where(e => DeveloperEstimateTypes.Contains(e.WorkEstimateType!.Value))
+            .Where(e => e.Worklog.TimeSpendInSeconds != null)
+            .Sum(e => (decimal)e.Worklog.TimeSpendInSeconds!.Value / 60 / 60);
+    }
+        
 
     public void SetChangeLogs(IEnumerable<IssueChangeLog> issueChaneLogs)
     {
@@ -126,7 +137,7 @@ public class IssueEntity
 
     public IssueParticipantEntity? GetParticipantByType(EmployeeType employeeType)
     {
-        return Participants.Where(x => x.EmployeeType == employeeType).FirstOrDefault();
+        return Participants.FirstOrDefault(x => x.EmployeeType == employeeType);
     }
 
     public void SetParticipants()
