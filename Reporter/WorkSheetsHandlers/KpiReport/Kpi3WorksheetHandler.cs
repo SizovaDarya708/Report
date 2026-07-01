@@ -9,9 +9,6 @@ public class Kpi3WorksheetHandler : WorksheetExportHandlerBase
 {
     private SprintReportEntity _sprintReportEntity;
 
-    private List<WorkEstimateTypeEnum> DeveloperEstimateTypes =
-        new List<WorkEstimateTypeEnum> { WorkEstimateTypeEnum.Develop, WorkEstimateTypeEnum.Rework, WorkEstimateTypeEnum.Review };
-
     public Kpi3WorksheetHandler(ExcelPackage excelPackage, string listName, SprintReportEntity sprintReportEntity)
     {
         ListName = listName;

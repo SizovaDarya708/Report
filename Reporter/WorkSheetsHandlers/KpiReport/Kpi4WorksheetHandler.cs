@@ -9,9 +9,6 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
 {
     private SprintReportEntity _sprintReportEntity;
 
-    private List<WorkEstimateTypeEnum> DeveloperEstimateTypes =
-        new List<WorkEstimateTypeEnum> { WorkEstimateTypeEnum.Develop, WorkEstimateTypeEnum.Rework, WorkEstimateTypeEnum.Review };
-
     public Kpi4WorksheetHandler(ExcelPackage excelPackage, string listName, SprintReportEntity sprintReportEntity)
     {
         ListName = listName;
@@ -37,16 +34,27 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
     public void FillReportData()
     {
         FillHeaders();
-        FillData();
+        FillDataByProject();
         FillFormat();
     }
 
-    private void FillData()
+    private void FillDataByProject()
     {
-        var developerPerIssues = new Dictionary<IssueParticipantEntity, List<IssueEntity>>(new IssueParticipantEntityComparer()) { };
         var allIssues = _sprintReportEntity.GetAllIssues();
+        var projectGroupedIssues = allIssues.GroupBy(issue => issue.ProjectKey)
+            .ToDictionary(k => k.Key, v => v.Select(i => i).ToList());
 
-        var allIssuesInfo = allIssues
+        foreach (var projectIssues in projectGroupedIssues)
+        {
+            FillDataByParticipant(projectIssues);
+        }
+    }
+
+    private void FillDataByParticipant(KeyValuePair<string, List<IssueEntity>> projectIssues)
+    {
+        var developerPerIssues = new Dictionary<IssueParticipantEntity, List<IssueEntity>>(new IssueParticipantEntityComparer()) { };       
+
+        var allIssuesInfo = projectIssues.Value
             .Where(i => i.Status.ToLower() == JiraConstants.Closed.ToLower());
 
         //группируем задачи по разработчику
@@ -71,18 +79,13 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
 
         foreach (var developer in developerPerIssues)
         {
-            FillStorypointAccuracyByDeveloper(developer.Key, developer.Value);
+            FillStorypointAccuracyByDeveloper(projectIssues.Key, developer.Key, developer.Value);
         }
+
     }
-    private void FillStorypointAccuracyByDeveloper(IssueParticipantEntity participant, List<IssueEntity> issues)
+   
+    private void FillStorypointAccuracyByDeveloper(string projectKey, IssueParticipantEntity participant, List<IssueEntity> issues)
     {
-        var randomIssueForKey = issues.FirstOrDefault();
-
-        if (randomIssueForKey == null)
-        {
-            return;
-        }
-
         var eS_i = 0;
         var rHtoSbyIssues = new List<decimal>();
         foreach (var issue in issues)
@@ -115,6 +118,8 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
         var r = CalculateMedian(rHtoSbyIssues);
         var rES_i = r * eS_i;
 
+        //Похоже поняла в чем беда - как надо ли считать точность:
+        //относительно оценок задач конкретного разработчика или относительно всего проекта?
         decimal eAcuracity = 0;
         decimal eS_iP_i = 0;
         //теперь уже считать суммы с медианной
@@ -145,12 +150,12 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
         }
 
         var Accuracy = 1; // пока 100%. Надо взять из KPI3. Вообще вопрос стоит ли брать? Или как правильно учесть ошибку оценки в производительности?
-        //скорее всего надо умножать на оценку раньше, чем ссчитается 
+        //скорее всего надо умножать на оценку раньше, чем считается 
         
         var pWeighted = (eS_iP_i/eS_i);
         var pFinal = pWeighted * (Accuracy / 100);
 
-        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, randomIssueForKey.ProjectKey);
+        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, projectKey);
         CurrentWorksheet.SetValue(currentRow, participantColumn, participant.Name);
         CurrentWorksheet.SetValue(currentRow, AccuracyColumn, Accuracy);
         CurrentWorksheet.SetValue(currentRow, pWeightedColumn, pWeighted);
@@ -159,7 +164,6 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(currentRow, StartPeriodDateColumn, _sprintReportEntity.ReportPeriod.StartDate);
         CurrentWorksheet.Cells[currentRow, EndPeriodDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.EndDate);
         CurrentWorksheet.SetValue(currentRow, EndPeriodDateColumn, _sprintReportEntity.ReportPeriod.EndDate);
-
 
         currentRow++;
     }
