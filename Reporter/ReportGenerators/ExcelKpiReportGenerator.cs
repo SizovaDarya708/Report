@@ -9,13 +9,14 @@ public class ExcelKpiReportGenerator
     private string _1ListName = "KPI 1.";
     private string _2_1ListName = "KPI 2.1.";
     private string _2_2ListName = "KPI 2.2.";
-    private string _3ListName = "KPI 3";
-    private string _4ListName = "KPI 4";
-    private string _5ListName = "KPI 5";
-    private string _6ListName = "KPI 6";
-    private string _7ListName = "KPI 8";
-    private string _8ListName = "KPI 10";
-    private string _9ListName = "KPI 11";
+    private string _3ListName = "KPI 3.";
+    private string _4ListName = "KPI 4.";
+    private string _5ListName = "KPI 5.";
+    private string _6ListName = "KPI 6.";
+    private string _7ListName = "KPI 8.";
+    private string _8ListName = "KPI 10.1.";
+    private string _10_2ListName = "KPI 10.2."
+    private string _9ListName = "KPI 11.";
 
     public void GenerateReport(string filePath, SprintReportEntity sprintReportEntity)
     {
@@ -58,9 +59,13 @@ public class ExcelKpiReportGenerator
                 new Kpi8WorksheetHandler(package, _7ListName, sprintReportEntity);
             eightListHandler.FillReportData();
 
-            Kpi10WorksheetHandler tenthListHandler =
-                new Kpi10WorksheetHandler(package, _8ListName, sprintReportEntity);
+            Kpi10_1WorksheetHandler tenthListHandler =
+                new Kpi10_1WorksheetHandler(package, _8ListName, sprintReportEntity);
             tenthListHandler.FillReportData();
+
+            Kpi10_2WorksheetHandler tenth_2ListHandler =
+                new Kpi10_2WorksheetHandler(package, _10_2ListName, sprintReportEntity);
+            tenth_2ListHandler.FillReportData();
 
             Kpi11WorksheetHandler elevenListHandler =
                 new Kpi11WorksheetHandler(package, _9ListName, sprintReportEntity);

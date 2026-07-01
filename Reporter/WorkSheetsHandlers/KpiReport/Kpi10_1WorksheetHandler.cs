@@ -5,14 +5,14 @@ using Reporter.Extensions;
 
 namespace Reporter.WorkSheetsHandlers.SprintReport;
 
-public class Kpi10WorksheetHandler : WorksheetExportHandlerBase
+public class Kpi10_1WorksheetHandler : WorksheetExportHandlerBase
 {
     private SprintReportEntity _sprintReportEntity;
 
     private List<WorkEstimateTypeEnum> DeveloperEstimateTypes =
         new List<WorkEstimateTypeEnum> { WorkEstimateTypeEnum.Develop, WorkEstimateTypeEnum.Rework, WorkEstimateTypeEnum.Review };
 
-    public Kpi10WorksheetHandler(ExcelPackage excelPackage, string listName, SprintReportEntity sprintReportEntity)
+    public Kpi10_1WorksheetHandler(ExcelPackage excelPackage, string listName, SprintReportEntity sprintReportEntity)
     {
         ListName = listName;
         CurrentExcelPackage = excelPackage;
