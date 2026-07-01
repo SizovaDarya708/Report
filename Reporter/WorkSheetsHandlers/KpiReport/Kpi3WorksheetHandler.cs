@@ -42,20 +42,19 @@ public class Kpi3WorksheetHandler : WorksheetExportHandlerBase
     private void FillData()
     {
         var allIssues = _sprintReportEntity.GetAllIssues();
-        
-         CalcStoryPointAccuracy(allIssues);
-    }
-    private void CalcStoryPointAccuracy(List<IssueEntity> issues)
-    {
-        var randomIssueForKey = issues.FirstOrDefault();
+        var projectGroupedIssues = allIssues.GroupBy(issue => issue.ProjectKey)
+           .ToDictionary(k => k.Key, v => v.Select(i => i).ToList());
 
-        if (randomIssueForKey == null)
+        foreach (var projectIssues in projectGroupedIssues)
         {
-            return;
+            CalcStoryPointAccuracy(projectIssues);
         }
-
+    }
+    private void CalcStoryPointAccuracy(KeyValuePair<string, List<IssueEntity>> projectIssues)
+    {
         var eS_i = 0;
         var rHtoSbyIssues = new List<decimal>();
+        var issues = projectIssues.Value;
         foreach (var issue in issues)
         {
             var s_i = issue.StoryPoints;
@@ -110,7 +109,7 @@ public class Kpi3WorksheetHandler : WorksheetExportHandlerBase
 
         var Accuracy = (1 - (eAcuracity/ rES_i)) * 100;
 
-        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, randomIssueForKey.ProjectKey);
+        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, projectIssues.Key);
         //CurrentWorksheet.SetValue(currentRow, participantColumn, participant.Name);
         CurrentWorksheet.SetValue(currentRow, AccuracyColumn, Accuracy);
         CurrentWorksheet.Cells[currentRow, StartPeriodDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.StartDate);
