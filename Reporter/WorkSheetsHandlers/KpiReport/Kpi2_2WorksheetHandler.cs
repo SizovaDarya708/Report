@@ -4,11 +4,11 @@ using Reporter.Extensions;
 
 namespace Reporter.WorkSheetsHandlers.SprintReport;
 
-public class Kpi2WorksheetHandler : WorksheetExportHandlerBase
+public class Kpi2_2WorksheetHandler : WorksheetExportHandlerBase
 {
     private SprintReportEntity _sprintReportEntity;
 
-    public Kpi2WorksheetHandler(ExcelPackage excelPackage, string listName, SprintReportEntity sprintReportEntity)
+    public Kpi2_2WorksheetHandler(ExcelPackage excelPackage, string listName, SprintReportEntity sprintReportEntity)
     {
         ListName = listName;
         CurrentExcelPackage = excelPackage;
@@ -52,7 +52,7 @@ public class Kpi2WorksheetHandler : WorksheetExportHandlerBase
     {
         var projectKey = projectIssues.Key;
         var allClosedIssues = projectIssues.Value.Where(i => i.Status == JiraConstants.Closed)
-            .Where(i => i.Type == JiraConstants.Bug || i.Type == JiraConstants.Incident);
+            .Where(i => i.Type == JiraConstants.Incident);
 
         CurrentWorksheet.SetValue(currentRow, projectNameColumn, projectKey);
 
@@ -103,7 +103,7 @@ public class Kpi2WorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(headerRow, projectNameColumn, "Проект");
         CurrentWorksheet.SetValue(headerRow, totalClosedIssuesColumn, "Количество задач");
         CurrentWorksheet.SetValue(headerRow, ResolveIssuesTimeColumn, "Суммарное время решения задач в часах");
-        CurrentWorksheet.SetValue(headerRow, AverageResolvingTimeForIssues, "Среднее время решения дефекта в часах");
+        CurrentWorksheet.SetValue(headerRow, AverageResolvingTimeForIssues, "Среднее время решения Инцидентов в часах");
 
         CurrentWorksheet.SetValue(headerRow, periodStartDateColumn, "Начало периода");
         CurrentWorksheet.SetValue(headerRow, periodEndDateColumn, "Конец периода");

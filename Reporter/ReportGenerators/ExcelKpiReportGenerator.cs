@@ -7,7 +7,8 @@ namespace Reporter.ReportGenerators;
 public class ExcelKpiReportGenerator
 {
     private string _1ListName = "KPI 1.";
-    private string _2ListName = "KPI 2.";
+    private string _2_1ListName = "KPI 2.1.";
+    private string _2_2ListName = "KPI 2.2.";
     private string _3ListName = "KPI 3";
     private string _4ListName = "KPI 4";
     private string _5ListName = "KPI 5";
@@ -29,9 +30,13 @@ public class ExcelKpiReportGenerator
                 new Kpi1WorksheetHandler(package, _1ListName, sprintReportEntity);
             firstListHandler.FillReportData();
 
-            Kpi2WorksheetHandler secondListHandler =
-                new Kpi2WorksheetHandler(package, _2ListName, sprintReportEntity);
+            Kpi2_1WorksheetHandler secondListHandler =
+                new Kpi2_1WorksheetHandler(package, _2_1ListName, sprintReportEntity);
             secondListHandler.FillReportData();
+
+            Kpi2_2WorksheetHandler second_2ListHandler =
+                new Kpi2_2WorksheetHandler(package, _2_2ListName, sprintReportEntity);
+            second_2ListHandler.FillReportData();
 
             Kpi3WorksheetHandler thirdListHandler =
                 new Kpi3WorksheetHandler(package, _3ListName, sprintReportEntity);
