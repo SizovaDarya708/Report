@@ -61,7 +61,7 @@ public class Kpi3WorksheetHandler : WorksheetExportHandlerBase
                 continue;            
             }
 
-            var h_i = issue.H_i();
+            var h_i = issue.GetAllDeveloperEstimatesInHours();
                       
 
             if (h_i == null || h_i == 0)
@@ -80,7 +80,7 @@ public class Kpi3WorksheetHandler : WorksheetExportHandlerBase
         }
 
         //var r = CalculateMedian(rHtoSbyIssues); // большое R вес СторПоинта по медиане среди всех выполненных оценок
-        var r = issues.Sum(x => x.H_i() / issues.Sum(x => x.StoryPoints ?? 3));
+        var r = issues.Sum(x => x.GetAllDeveloperEstimatesInHours() / issues.Sum(x => x.StoryPoints ?? 3));
         var rES_i = r * eS_i; 
 
         decimal eAcuracity = 0;
@@ -94,7 +94,7 @@ public class Kpi3WorksheetHandler : WorksheetExportHandlerBase
                 continue;
             }
 
-            var h_i = issue.H_i();
+            var h_i = issue.GetAllDeveloperEstimatesInHours();
 
             if (h_i == null || h_i == 0)
             {

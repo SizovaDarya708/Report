@@ -63,7 +63,10 @@ public class IssueEntity
         return spentTime;
     }
 
-    public decimal H_i()
+    /// <summary>
+    /// H_i - Получить все списания разработчиками по задаче в часах
+    /// </summary>
+    public decimal GetAllDeveloperEstimatesInHours()
     {
         return Estimates
             .Where(e => e.WorkEstimateType != null)

@@ -15,7 +15,7 @@ public class ExcelKpiReportGenerator
     private string _6ListName = "KPI 6.";
     private string _7ListName = "KPI 8.";
     private string _8ListName = "KPI 10.1.";
-    private string _10_2ListName = "KPI 10.2."
+    private string _10_2ListName = "KPI 10.2.";
     private string _9ListName = "KPI 11.";
 
     public void GenerateReport(string filePath, SprintReportEntity sprintReportEntity)

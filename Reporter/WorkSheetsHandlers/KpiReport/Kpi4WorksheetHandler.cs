@@ -26,8 +26,11 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
     private int AccuracyColumn = 3;
     private int pWeightedColumn = 4;
     private int pFinalColumn = 5;
-    private int StartPeriodDateColumn = 6;
-    private int EndPeriodDateColumn = 7;
+    private int spColumn = 6;
+    private int issueCountColumn = 7;
+    private int issueEstimateTimeColumn = 8;
+    private int StartPeriodDateColumn = 9;
+    private int EndPeriodDateColumn = 10;
 
     #endregion
 
@@ -97,7 +100,7 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
                 continue;            
             }
 
-            var h_i = issue.H_i();
+            var h_i = issue.GetAllDeveloperEstimatesInHours();
                       
 
             if (h_i == null || h_i == 0)
@@ -118,10 +121,11 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
         var r = CalculateMedian(rHtoSbyIssues);
         var rES_i = r * eS_i;
 
-        //Похоже поняла в чем беда - как надо ли считать точность:
+        //Похоже поняла в чем беда - как надо считать точность:
         //относительно оценок задач конкретного разработчика или относительно всего проекта?
         decimal eAcuracity = 0;
         decimal eS_iP_i = 0;
+        decimal issuesEstimateTime = 0;
         //теперь уже считать суммы с медианной
         foreach (var issue in issues)
         {
@@ -132,7 +136,7 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
                 continue;
             }
 
-            var h_i = issue.H_i();
+            var h_i = issue.GetAllDeveloperEstimatesInHours();
 
             if (h_i == null || h_i == 0)
             {
@@ -147,6 +151,7 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
 
             eS_iP_i += (decimal)s_i * p_i.Value;
             eAcuracity += Math.Abs(h_i - (r * (decimal)s_i));
+            issuesEstimateTime += h_i;
         }
 
         var Accuracy = 1; // пока 100%. Надо взять из KPI3. Вообще вопрос стоит ли брать? Или как правильно учесть ошибку оценки в производительности?
@@ -155,11 +160,17 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
         var pWeighted = (eS_iP_i/eS_i);
         var pFinal = pWeighted * (Accuracy / 100);
 
+        var issuesCount = issues.Count;
+        var issuesSp = issues.Where(i => i.StoryPoints != null).Sum(i => i.StoryPoints);
+
         CurrentWorksheet.SetValue(currentRow, projectKeyColumn, projectKey);
         CurrentWorksheet.SetValue(currentRow, participantColumn, participant.Name);
         CurrentWorksheet.SetValue(currentRow, AccuracyColumn, Accuracy);
         CurrentWorksheet.SetValue(currentRow, pWeightedColumn, pWeighted);
         CurrentWorksheet.SetValue(currentRow, pFinalColumn, pFinal);
+        CurrentWorksheet.SetValue(currentRow, issueCountColumn, issuesCount);
+        CurrentWorksheet.SetValue(currentRow, spColumn, issuesSp);
+        CurrentWorksheet.SetValue(currentRow, issueEstimateTimeColumn, issuesEstimateTime);
         CurrentWorksheet.Cells[currentRow, StartPeriodDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.StartDate);
         CurrentWorksheet.SetValue(currentRow, StartPeriodDateColumn, _sprintReportEntity.ReportPeriod.StartDate);
         CurrentWorksheet.Cells[currentRow, EndPeriodDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.EndDate);
@@ -176,6 +187,9 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(headerRow, AccuracyColumn, "Точность");
         CurrentWorksheet.SetValue(headerRow, pWeightedColumn, "Взвешенная производительность");
         CurrentWorksheet.SetValue(headerRow, pFinalColumn, "Производительность с учётом точности");
+        CurrentWorksheet.SetValue(headerRow, spColumn, "Сумма оценок в SP");
+        CurrentWorksheet.SetValue(headerRow, issueCountColumn, "Количество задач на разработчика");
+        CurrentWorksheet.SetValue(headerRow, issueEstimateTimeColumn, "Сумма затраченного времени разработкой в часах");
         CurrentWorksheet.SetValue(headerRow, StartPeriodDateColumn, "Начало периода");
         CurrentWorksheet.SetValue(headerRow, EndPeriodDateColumn, "Конец периода");
     }
