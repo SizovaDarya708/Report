@@ -39,4 +39,25 @@ public static class WorkEstimateExtensions
         return null;
     }
 
+    public static string GetWorkEstimateName(WorkEstimateTypeEnum? type)
+    {
+        if (type == WorkEstimateTypeEnum.Develop)
+        {
+            return JiraConstants.EstimateTypeWorkDevelop;
+        }        
+        else if (type == WorkEstimateTypeEnum.Rework)
+        {
+            return JiraConstants.EstimateTypeRework;
+        }
+        else if (type == WorkEstimateTypeEnum.Analys)
+        {
+            return JiraConstants.EstimateTypeAnaliz;
+        }
+        else if (type == WorkEstimateTypeEnum.Review)
+        {
+            return JiraConstants.EstimateTypeReview;
+        }
+        return "-";
+    }
+
 }

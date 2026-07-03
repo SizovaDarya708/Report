@@ -17,6 +17,9 @@ public class ExcelKpiReportGenerator
     private string _8ListName = "KPI 10.1.";
     private string _10_2ListName = "KPI 10.2.";
     private string _9ListName = "KPI 11.";
+    private string allLogsListName = "Записи о списаниях";
+    private string issueInfoListName = "Информация о задачах";
+    private string changeLogsListName = "Переходы по задачам";
 
     public void GenerateReport(string filePath, SprintReportEntity sprintReportEntity)
     {
@@ -71,9 +74,20 @@ public class ExcelKpiReportGenerator
                 new Kpi11WorksheetHandler(package, _9ListName, sprintReportEntity);
             elevenListHandler.FillReportData();
 
+            AllLogsWorksheetHandler allLogsHandler =
+                new AllLogsWorksheetHandler(package, allLogsListName, sprintReportEntity);
+            allLogsHandler.FillReportData();
+
+            AllIssueWorksheetHandler allIssueWorksheetHandler =
+                new AllIssueWorksheetHandler(package, issueInfoListName, sprintReportEntity);
+            allIssueWorksheetHandler.FillReportData();
+
+            ChangeLogsWorksheetHandler changeLogsWorksheetHandler =
+                new ChangeLogsWorksheetHandler(package, changeLogsListName, sprintReportEntity);
+            changeLogsWorksheetHandler.FillReportData();
+
             package.Save();
         }
-
     }
 }
 
