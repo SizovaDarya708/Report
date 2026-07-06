@@ -53,7 +53,7 @@ public class Kpi2_2WorksheetHandler : WorksheetExportHandlerBase
         var projectKey = projectIssues.Key;
         var allClosedIssues = projectIssues.Value.Where(i => i.Status == JiraConstants.Closed)
             .Where(i => i.Type == JiraConstants.Incident);
-
+        
         CurrentWorksheet.SetValue(currentRow, projectNameColumn, projectKey);
 
         TimeSpan allResolvingTime = TimeSpan.Zero;
@@ -87,8 +87,8 @@ public class Kpi2_2WorksheetHandler : WorksheetExportHandlerBase
         }
         CurrentWorksheet.SetValue(currentRow, totalClosedIssuesColumn, allClosedIssues.Count());
         CurrentWorksheet.SetValue(currentRow, ResolveIssuesTimeColumn, allResolvingTime.TotalHours);
-        var average = allResolvingTime / allClosedIssues.Count();
-        CurrentWorksheet.SetValue(currentRow, AverageResolvingTimeForIssues, average.TotalHours);
+        var average = allClosedIssues.Count() > 1 ? allResolvingTime.TotalHours / allClosedIssues.Count() : 0;
+        CurrentWorksheet.SetValue(currentRow, AverageResolvingTimeForIssues, average);
 
         CurrentWorksheet.Cells[currentRow, periodStartDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.StartDate);
         CurrentWorksheet.SetValue(currentRow, periodStartDateColumn, _sprintReportEntity.ReportPeriod.StartDate);

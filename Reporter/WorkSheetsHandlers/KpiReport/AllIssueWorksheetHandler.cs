@@ -56,6 +56,18 @@ public class AllIssueWorksheetHandler : WorksheetExportHandlerBase
             CurrentWorksheet.SetValue(currentRow, StatusColumn, issue.Status);
             CurrentWorksheet.Cells[currentRow, CreatedDateColumn].SetDateTime(issue.CreateDate);
             CurrentWorksheet.SetValue(currentRow, CreatedDateColumn, issue.CreateDate);
+            CurrentWorksheet.SetValue(currentRow, CreatedDateColumn + 1, 
+                string.Join(Environment.NewLine, 
+                    issue.ChangeLogs.Where(x => x.Items.Any(y =>  y.FieldName == "status")).
+                        Select(x => 
+                            new
+                            {
+                                Name = x.Author.Name,
+                                From = x.Items.First(z => z.FieldName == "status").FromValue,
+                                To = x.Items.First(z => z.FieldName == "status").ToValue
+                            }
+                        )
+                ));
             currentRow++;
         }
     }   

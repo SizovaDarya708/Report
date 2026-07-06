@@ -12,21 +12,24 @@ public class BaseReportInput
     public List<string> ProjectKeys { get; set; } = new List<string>();
 
     public bool OnlyClosedIssues { get; set; } = true;
+    
 
     public string GetJql()
     {
+        var _endDate = new  DateTime(
+            EndDate.Year, EndDate.Month, EndDate.Day).AddDays(1);
+        var _startDate = new DateTime(
+            StartDate.Year, StartDate.Month, StartDate.Day).AddDays(-1);
+        
         //Как вытягивать данные по задачам из старых спринтов, которые были обновлены позже спринта
         // если убрать фильтрацию по дате обновления или создания - данных будет слишком много, обработка станет медленной
         //Jira блокирует объемные и частые запросы
         var jql = $"project in ({String.Join(",", ProjectKeys)}) AND " +
-            $"((updatedDate >= '{StartDate.AddDays(-3).ToString("yyyy-MM-dd")}' " +
-            $"AND updatedDate < '{EndDate.AddDays(3).ToString("yyyy-MM-dd")}') OR " +
-            $"(createdDate >= '{StartDate.AddDays(-7).ToString("yyyy-MM-dd")}' " +
-            $"AND createdDate < '{EndDate.AddDays(1).ToString("yyyy-MM-dd")}'))";
+            $"status CHANGED TO \"Закрыт\" AFTER \"{_startDate.ToString("yyyy-MM-dd")}\" BEFORE \"{_endDate.ToString("yyyy-MM-dd")}\"";
 
         if (OnlyClosedIssues)
         {
-            jql+= $"AND status = 'Закрыт'";
+            //jql+= $"AND status = 'Закрыт'";
         }
 
         if (!string.IsNullOrEmpty(AdditionalJiraFilter))
