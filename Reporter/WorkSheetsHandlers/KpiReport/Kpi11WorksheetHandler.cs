@@ -33,14 +33,25 @@ public class Kpi11WorksheetHandler : WorksheetExportHandlerBase
     public void FillReportData()
     {
         FillHeaders();
-        FillData();
+        FillDataByProjects();
         FillFormat();
     }
 
-    private void FillData()
+    private void FillDataByProjects()
+    {
+        var allIssues = _sprintReportEntity.GetAllIssues();
+        var projectGroupedIssues = allIssues.GroupBy(issue => issue.ProjectKey)
+           .ToDictionary(k => k.Key, v => v.Select(i => i).ToList());
+
+        foreach (var projectIssues in projectGroupedIssues)
+        {
+            FillData(projectIssues);
+        }
+    }
+    private void FillData(KeyValuePair<string, List<IssueEntity>> projectIssues)
     {
         var developerPerIssues = new Dictionary<IssueParticipantEntity, List<IssueEntity>>(new IssueParticipantEntityComparer()) {};
-        var allIssues = _sprintReportEntity.GetAllIssues();
+        var allIssues = projectIssues.Value;
 
         //группируем задачи по разработчику
         foreach (var issue in allIssues)
@@ -64,19 +75,12 @@ public class Kpi11WorksheetHandler : WorksheetExportHandlerBase
 
         foreach (var developer in developerPerIssues)
         {
-            FillDeveloperIssues(developer);
+            FillDeveloperIssues(developer, projectIssues.Key);
         }
     }
-    private void FillDeveloperIssues(KeyValuePair<IssueParticipantEntity, List<IssueEntity>> developersWorks)
+    private void FillDeveloperIssues(KeyValuePair<IssueParticipantEntity, List<IssueEntity>> developersWorks, string projectKey)
     {
-        var randomIssueForKey = developersWorks.Value.FirstOrDefault();
-
-        if (randomIssueForKey == null)
-        {
-            return;        
-        }
-
-        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, randomIssueForKey.ProjectKey);
+        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, projectKey);
         CurrentWorksheet.SetValue(currentRow, authorNameColumn, developersWorks.Key.Name);
 
         
