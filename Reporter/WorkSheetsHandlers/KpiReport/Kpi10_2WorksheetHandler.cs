@@ -36,16 +36,27 @@ public class Kpi10_2WorksheetHandler : WorksheetExportHandlerBase
     public void FillReportData()
     {
         FillHeaders();
-        FillData();
+        FillDataByProjects();
         FillFormat();
     }
 
-    private void FillData()
+    private void FillDataByProjects()
+    {
+        var allIssues = _sprintReportEntity.GetAllIssues();
+        var projectGroupedIssues = allIssues.GroupBy(issue => issue.ProjectKey)
+           .ToDictionary(k => k.Key, v => v.Select(i => i).ToList());
+
+        foreach (var projectIssues in projectGroupedIssues)
+        {
+            FillData(projectIssues);
+        }
+    }
+
+    private void FillData(KeyValuePair<string, List<IssueEntity>> projectIssues)
     {
         var developerPerIssues = new Dictionary<IssueParticipantEntity, List<IssueEntity>>(new IssueParticipantEntityComparer()) {};
-        var allIssues = _sprintReportEntity.GetAllIssues();
 
-        var allIssuesInfo = allIssues
+        var allIssuesInfo = projectIssues.Value
             .Where(i => i.Status.ToLower() == JiraConstants.Closed.ToLower());
 
         //группируем задачи по разработчику
@@ -70,20 +81,13 @@ public class Kpi10_2WorksheetHandler : WorksheetExportHandlerBase
 
         foreach (var developer in developerPerIssues)
         {
-            FillReworksByDeveloper(developer);
+            FillReworksByDeveloper(developer, projectIssues.Key);
         }
     }
 
-    private void FillReworksByDeveloper(KeyValuePair<IssueParticipantEntity, List<IssueEntity>> issuesPerParticipant)
+    private void FillReworksByDeveloper(KeyValuePair<IssueParticipantEntity, List<IssueEntity>> issuesPerParticipant, string projectKey)
     {
-        var randomIssueForKey = issuesPerParticipant.Value.FirstOrDefault();
-
-        if (randomIssueForKey == null)
-        {
-            return;
-        }
-
-        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, randomIssueForKey.ProjectKey);
+        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, projectKey);
         CurrentWorksheet.SetValue(currentRow, authorNameColumn, issuesPerParticipant.Key.Name);
 
         //Посчитать всю работу над задачами по сотруднику
@@ -93,7 +97,7 @@ public class Kpi10_2WorksheetHandler : WorksheetExportHandlerBase
             .Where(estimate => estimate.Worklog.Participant.Name == issuesPerParticipant.Key.Name)
             .Where(estimate => estimate.WorkEstimateType != null && DeveloperEstimateTypes.Contains(estimate.WorkEstimateType!.Value))
             .Sum(estimate => estimate.Worklog.TimeSpendInSeconds);
-        CurrentWorksheet.SetValue(currentRow, resolveIssueTimeColumn, allIssueTimeSpent/ 60 / 60);
+        CurrentWorksheet.SetValue(currentRow, resolveIssueTimeColumn, allIssueTimeSpent/60/60);
 
         //Подсчитать все время на дорботки по задачам
         long allReworksTimeSpent = 0;
