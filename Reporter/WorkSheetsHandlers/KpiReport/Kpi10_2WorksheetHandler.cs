@@ -93,7 +93,7 @@ public class Kpi10_2WorksheetHandler : WorksheetExportHandlerBase
             .Where(estimate => estimate.Worklog.Participant.Name == issuesPerParticipant.Key.Name)
             .Where(estimate => estimate.WorkEstimateType != null && DeveloperEstimateTypes.Contains(estimate.WorkEstimateType!.Value))
             .Sum(estimate => estimate.Worklog.TimeSpendInSeconds);
-        CurrentWorksheet.SetValue(currentRow, resolveIssueTimeColumn, allIssueTimeSpent);
+        CurrentWorksheet.SetValue(currentRow, resolveIssueTimeColumn, allIssueTimeSpent/ 60 / 60);
 
         //Подсчитать все время на дорботки по задачам
         long allReworksTimeSpent = 0;
@@ -103,7 +103,7 @@ public class Kpi10_2WorksheetHandler : WorksheetExportHandlerBase
             allReworksTimeSpent += (reworksInfo.TimeSpendInSeconds ?? 0);                    
         }
 
-        CurrentWorksheet.SetValue(currentRow, reworkTimeSpentColumn, allReworksTimeSpent);
+        CurrentWorksheet.SetValue(currentRow, reworkTimeSpentColumn, allReworksTimeSpent / 60 / 60);
         var reworkPercentage = allReworksTimeSpent == 0 ? allReworksTimeSpent : ((decimal)allReworksTimeSpent / (decimal)allIssueTimeSpent) * 100;
         CurrentWorksheet.Cells[currentRow, issuesWithReworkPercentageColumn].Style.Numberformat.Format = "0.#";
         CurrentWorksheet.SetValue(currentRow, issuesWithReworkPercentageColumn, reworkPercentage);
@@ -118,8 +118,8 @@ public class Kpi10_2WorksheetHandler : WorksheetExportHandlerBase
     {
         //Заголовки данных
         CurrentWorksheet.SetValue(headerRow, projectKeyColumn, "Проект");
-        CurrentWorksheet.SetValue(headerRow, resolveIssueTimeColumn, "Время на решение задачи");
-        CurrentWorksheet.SetValue(headerRow, reworkTimeSpentColumn, "Время на доработки");
+        CurrentWorksheet.SetValue(headerRow, resolveIssueTimeColumn, "Время на решение задачи в часах");
+        CurrentWorksheet.SetValue(headerRow, reworkTimeSpentColumn, "Время на доработки в часах");
         CurrentWorksheet.SetValue(headerRow, issuesWithReworkPercentageColumn, "Процент времени затраченное на доработки от всего времени задачи");
 
         CurrentWorksheet.SetValue(headerRow, periodStartDateColumn, "Начало периода");
