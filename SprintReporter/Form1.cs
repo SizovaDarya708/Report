@@ -7,6 +7,8 @@ namespace SprintReporter
 {
     public partial class Form1 : Form
     {
+        private static Form1 _instance;
+        
         private IJiraService jiraService;
         private ISprintReportService sprintReportService;
         private IKpiReportService kpiReportService;
@@ -15,8 +17,30 @@ namespace SprintReporter
         {
             InitializeComponent();
             DefaultValuesInitialization();
+            _instance = this;
+            ErrorOutputTextBox.Multiline = true;
+            ErrorOutputTextBox.ScrollBars = ScrollBars.Vertical;
         }
 
+        public static void Log(string text)
+        {
+            _instance?.AppendToLog(text);
+        }
+        
+        public void AppendToLog(string text)
+        {
+            if (ErrorOutputTextBox.InvokeRequired)
+            {
+                // Р’С‹Р·РѕРІ РёР· РґСЂСѓРіРѕРіРѕ РїРѕС‚РѕРєР° вЂ“ РґРµР»РµРіРёСЂСѓРµРј UIвЂ‘РїРѕС‚РѕРєСѓ
+                ErrorOutputTextBox.Invoke(new Action<string>(AppendToLog), text);
+                return;
+            }
+            // Р’С‹РїРѕР»РЅСЏРµС‚СЃСЏ РІ UIвЂ‘РїРѕС‚РѕРєРµ
+            ErrorOutputTextBox.AppendText(text + Environment.NewLine);
+            // РџСЂРѕРєСЂСѓС‡РёРІР°РµРј РІРЅРёР·, С‡С‚РѕР±С‹ РІРёРґРµС‚СЊ РїРѕСЃР»РµРґРЅРёРµ СЃРѕРѕР±С‰РµРЅРёСЏ
+            ErrorOutputTextBox.ScrollToCaret();
+        }
+        
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -27,8 +51,8 @@ namespace SprintReporter
             ErrorOutputTextBox.Text = string.Empty;
             jiraService = new JiraClientService(new JiraInteraction.Dtos.JiraClientInitData
             {
-                JiraLogin = LoginTextInput.Text,
-                JiraPassword = PasswordJiraTextInput.Text,
+                JiraLogin = "a.zhizhin",
+                JiraPassword = "@GTXkR~$uH&6'$.",
             });
 
             var isSuccessLogTask = jiraService.CheckClientConnection();
@@ -36,7 +60,7 @@ namespace SprintReporter
             if (isSuccessLog)
             {
                 JiraLoginButton.BackColor = Color.Green;
-                JiraLoginButton.Text = "Вы авторизованы";
+                JiraLoginButton.Text = "пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
             }
             else
             {
@@ -66,11 +90,11 @@ namespace SprintReporter
                     });
                 await reportTask;
                 SystemSounds.Beep.Play();
-                ErrorOutputTextBox.Text = "Печать завершена";
+                ErrorOutputTextBox.Text = "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
             }
             catch (Exception ex)
             {
-                ErrorOutputTextBox.Text = ex.Message;
+                ErrorOutputTextBox.Text =  $"{ex.Message} -> {ex.StackTrace}";
             }
         }
 
@@ -157,6 +181,8 @@ namespace SprintReporter
                     return;
                 }
 
+                Form1.Log("РќР°С‡Р°С‚ СЃР±РѕСЂ РјРµС‚СЂРёРє");
+                
                 kpiReportService = new KpiReportService(jiraService);
                 var reportTask = kpiReportService.ExecuteAsync(
                     new JiraInteraction.Dtos.KpiReportInput
@@ -170,11 +196,11 @@ namespace SprintReporter
                     });
                 await reportTask;
                 SystemSounds.Beep.Play();
-                ErrorOutputTextBox.Text = "Печать завершена";
+                ErrorOutputTextBox.Text = "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
             }
             catch (Exception ex)
             {
-                ErrorOutputTextBox.Text = ex.Message;
+                ErrorOutputTextBox.Text = $"{ex.Message} -> {ex.StackTrace}";
             }
         }
 
@@ -208,7 +234,7 @@ namespace SprintReporter
         {
             if (jiraService == null)
             {
-                ErrorOutputTextBox.Text = "Необходима авторизация в Jira";
+                ErrorOutputTextBox.Text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Jira";
                 return false;
             }
             return true;
@@ -218,7 +244,7 @@ namespace SprintReporter
         {
             if (FileDirectoryName.Text == string.Empty || FileDirectoryName == null)
             {
-                ErrorOutputTextBox.Text = "Выберите папку для загрузки отчета";
+                ErrorOutputTextBox.Text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ";
                 return false;
             }
             return true;
@@ -228,7 +254,7 @@ namespace SprintReporter
         {
             if (projectKeysList.CheckedItems.Count == 0)
             {
-                ErrorOutputTextBox.Text = "Необходимо выбрать хотя бы один проект для выгрузки";
+                ErrorOutputTextBox.Text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
                 return false;
             }
             return true;

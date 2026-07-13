@@ -71,8 +71,11 @@ public class JiraClientService : IJiraService
         var wklogIdPattern = "data-worklog\\s*=\\s*[\"'](\\d+)[\"']";
         var wkIdRg = new Regex(wklogIdPattern);
 
+        Console.WriteLine($"Start parallel foreach issue");
         await Parallel.ForEachAsync(jiraKeys, async (issue, ct) =>
         {
+            Console.WriteLine($"{issue.Key}  in thread {Thread.CurrentThread.ManagedThreadId}");
+
             var info = await client.RestClient.RestSharpClient.ExecuteGetAsync(
             new RestRequest($"/secure/TempoIssueBoard!report.jspa?v=1&issue={issue.Key}&show_worklog_attribute:_Тип_=true" +
             $"&periodType=FLEX&periodView=DATES&from={issue.CreatedDate.ToString("yyyy-MM-dd")}&to={DateTime.Now.ToString("yyyy-MM-dd")}",

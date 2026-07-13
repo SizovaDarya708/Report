@@ -100,6 +100,11 @@ public class Kpi10_1WorksheetHandler : WorksheetExportHandlerBase
             .Sum(estimate => estimate.Worklog.TimeSpendInSeconds);
         CurrentWorksheet.SetValue(currentRow, resolveIssueTimeColumn, allIssueTimeSpent/60/60);
 
+        if (allIssueTimeSpent == 0)
+        {
+            return;
+        }
+        
         //Подсчитать все время на дорботки по задачам
         long allReworksTimeSpent = 0;
         foreach (var issue in issuesPerParticipant.Value)

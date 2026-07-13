@@ -80,6 +80,7 @@ public class Kpi3WorksheetHandler : WorksheetExportHandlerBase
         }
 
         //var r = CalculateMedian(rHtoSbyIssues); // большое R вес СторПоинта по медиане среди всех выполненных оценок
+        //TODO
         var r = issues.Sum(x => x.GetAllDeveloperEstimatesInHours() / issues.Sum(x => x.StoryPoints ?? 3));
         var rES_i = r * eS_i; 
 

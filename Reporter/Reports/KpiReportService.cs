@@ -19,17 +19,25 @@ public class KpiReportService : IKpiReportService
         KpiReportInput input,
         CancellationToken cancellationToken)
     {
+        Console.WriteLine("Start receiving KPI");
+        
         var issues = await _jiraService.GetIssuesForReportAsync(input, cancellationToken);
 
+        Console.WriteLine($"total number of issues {issues.Count()}");
+        
         var reportEntity = new SprintReportEntity(input.StartDate, input.EndDate);
 
         await reportEntity.FillDataAsync(issues);
 
+        Console.WriteLine("Receiving and filling in time write-off data (not received via API)");
         //Получение и заполнение данных о списаниях времени (не приходит по API)
         var jiraKeys = reportEntity.GetAllIssueInfoForApiRequest();
         var estimateDto = await _jiraService.GetEstimateDataPerIssuesAsync(jiraKeys, cancellationToken);
+        
         reportEntity.SetEstimateTimeData(estimateDto);
 
+        Console.WriteLine($"estimate ok");
+        
         _excelReportGenerator.GenerateReport(input.FilePath, reportEntity);
     }
 }

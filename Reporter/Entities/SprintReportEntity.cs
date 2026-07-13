@@ -119,6 +119,7 @@ public class SprintReportEntity
 #else
         await Parallel.ForEachAsync(JiraIssues, async (issue, ct) =>
         {
+            Console.WriteLine($"Get info by {issue.Key)}");
             var sprintName = issue.GetFieldValue(JiraConstants.SprintField);
 
             if (sprintName != null)

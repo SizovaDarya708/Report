@@ -23,6 +23,7 @@ public class ExcelKpiReportGenerator
 
     public void GenerateReport(string filePath, SprintReportEntity sprintReportEntity)
     {
+        Console.WriteLine($"Start generate report");
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
         var dateString = $"{sprintReportEntity.ReportPeriod.StartDate.ToString("dd.MM")}-{sprintReportEntity.ReportPeriod.EndDate.ToString("dd.MM.yy")}";
@@ -30,46 +31,57 @@ public class ExcelKpiReportGenerator
 
         using (var package = new ExcelPackage(new FileInfo(reportPath)))
         {
+            Console.WriteLine($"KPI1");
             Kpi1WorksheetHandler firstListHandler =
                 new Kpi1WorksheetHandler(package, _1ListName, sprintReportEntity);
             firstListHandler.FillReportData();
 
+            Console.WriteLine($"KPI2");
             Kpi2_1WorksheetHandler secondListHandler =
                 new Kpi2_1WorksheetHandler(package, _2_1ListName, sprintReportEntity);
             secondListHandler.FillReportData();
 
+            Console.WriteLine($"KPI2_2");
             Kpi2_2WorksheetHandler second_2ListHandler =
                 new Kpi2_2WorksheetHandler(package, _2_2ListName, sprintReportEntity);
             second_2ListHandler.FillReportData();
 
+            Console.WriteLine($"KPI3");
             Kpi3WorksheetHandler thirdListHandler =
                 new Kpi3WorksheetHandler(package, _3ListName, sprintReportEntity);
             thirdListHandler.FillReportData();
 
+            Console.WriteLine($"KPI4");
             Kpi4WorksheetHandler fourthListHandler =
                 new Kpi4WorksheetHandler(package, _4ListName, sprintReportEntity);
             fourthListHandler.FillReportData();
 
+            Console.WriteLine($"KPI5");
             Kpi5WorksheetHandler fifthListHandler =
                 new Kpi5WorksheetHandler(package, _5ListName, sprintReportEntity);
             fifthListHandler.FillReportData();
 
+            Console.WriteLine($"KPI6");
             Kpi6WorksheetHandler sixthListHandler =
                 new Kpi6WorksheetHandler(package, _6ListName, sprintReportEntity);
             sixthListHandler.FillReportData();
 
+            Console.WriteLine($"KPI8");
             Kpi8WorksheetHandler eightListHandler =
                 new Kpi8WorksheetHandler(package, _7ListName, sprintReportEntity);
             eightListHandler.FillReportData();
 
+            Console.WriteLine($"KPI10_1");
             Kpi10_1WorksheetHandler tenthListHandler =
                 new Kpi10_1WorksheetHandler(package, _8ListName, sprintReportEntity);
             tenthListHandler.FillReportData();
 
-            Kpi10_2WorksheetHandler tenth_2ListHandler =
-                new Kpi10_2WorksheetHandler(package, _10_2ListName, sprintReportEntity);
-            tenth_2ListHandler.FillReportData();
+            // Console.WriteLine($"KPI10_2");
+            // Kpi10_2WorksheetHandler tenth_2ListHandler =
+            //     new Kpi10_2WorksheetHandler(package, _10_2ListName, sprintReportEntity);
+            // tenth_2ListHandler.FillReportData();
 
+            Console.WriteLine($"KPI11");
             Kpi11WorksheetHandler elevenListHandler =
                 new Kpi11WorksheetHandler(package, _9ListName, sprintReportEntity);
             elevenListHandler.FillReportData();
