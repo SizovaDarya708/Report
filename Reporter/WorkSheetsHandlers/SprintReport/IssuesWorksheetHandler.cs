@@ -85,7 +85,7 @@ public class IssuesWorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(currentRow, statusColumn, issue.Status);
         CurrentWorksheet.SetValue(currentRow, typeColumn, issue.Type);
         CurrentWorksheet.SetValue(currentRow, PriorityColumn, issue.Priority);
-        CurrentWorksheet.SetValue(currentRow, StoryPointsColumn, issue.StoryPoints);
+        CurrentWorksheet.SetValue(currentRow, StoryPointsColumn, issue.DeveloperStoryPoints);
         CurrentWorksheet.SetValue(currentRow, EstimateTimeColumn, issue.TimeEstimateInSeconds);
         CurrentWorksheet.Cells[currentRow, ResolutionDateColumn].SetDateTime(issue.ResolutionDate);
         CurrentWorksheet.SetValue(currentRow, ResolutionColumn, issue.Resolution);

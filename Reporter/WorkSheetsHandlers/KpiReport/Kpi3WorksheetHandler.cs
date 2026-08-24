@@ -54,7 +54,7 @@ public class Kpi3WorksheetHandler : WorksheetExportHandlerBase
         var issues = projectIssues.Value;
         foreach (var issue in issues)
         {
-            var s_i = issue.StoryPoints;
+            var s_i = issue.DeveloperStoryPoints;
 
             if (s_i == null || s_i == 0)
             {
@@ -81,14 +81,14 @@ public class Kpi3WorksheetHandler : WorksheetExportHandlerBase
 
         //var r = CalculateMedian(rHtoSbyIssues); // большое R вес СторПоинта по медиане среди всех выполненных оценок
         //TODO
-        var r = issues.Sum(x => x.GetAllDeveloperEstimatesInHours() / issues.Sum(x => x.StoryPoints ?? 3));
+        var r = issues.Sum(x => x.GetAllDeveloperEstimatesInHours() / issues.Sum(x => x.DeveloperStoryPoints ?? 3));
         var rES_i = r * eS_i; 
 
         decimal eAcuracity = 0;
         //теперь уже считать суммы с медианной
         foreach (var issue in issues)
         {
-            var s_i = issue.StoryPoints;
+            var s_i = issue.DeveloperStoryPoints;
 
             if (s_i == null || s_i == 0)
             {

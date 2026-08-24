@@ -46,7 +46,7 @@ public class AllIssueWorksheetHandler : WorksheetExportHandlerBase
             CurrentWorksheet.SetValue(currentRow, projectKeyColumn, issue.ProjectKey);
             CurrentWorksheet.SetValue(currentRow, issueNameColumn, issue.Key);
             CurrentWorksheet.SetValue(currentRow, issueTypeColumn, issue.Type);
-            CurrentWorksheet.SetValue(currentRow, SpColumn, issue.StoryPoints ?? 0);
+            CurrentWorksheet.SetValue(currentRow, SpColumn, issue.DeveloperStoryPoints ?? 0);
             CurrentWorksheet.SetValue(currentRow, PriorityColumn, issue.Priority ?? "-");
             var reworks = issue.GetReworkInfo();
             var reworkCount = reworks.CountOfRework;

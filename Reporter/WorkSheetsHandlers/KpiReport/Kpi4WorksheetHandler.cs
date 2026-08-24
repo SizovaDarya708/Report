@@ -93,7 +93,7 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
         var rHtoSbyIssues = new List<decimal>();
         foreach (var issue in issues)
         {
-            var s_i = issue.StoryPoints;
+            var s_i = issue.DeveloperStoryPoints;
 
             if (s_i == null || s_i == 0)
             {
@@ -129,7 +129,7 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
         //теперь уже считать суммы с медианной
         foreach (var issue in issues)
         {
-            var s_i = issue.StoryPoints;
+            var s_i = issue.DeveloperStoryPoints;
 
             if (s_i == null || s_i == 0)
             {
@@ -161,7 +161,7 @@ public class Kpi4WorksheetHandler : WorksheetExportHandlerBase
         var pFinal = pWeighted * (Accuracy / 100);
 
         var issuesCount = issues.Count;
-        var issuesSp = issues.Where(i => i.StoryPoints != null).Sum(i => i.StoryPoints);
+        var issuesSp = issues.Where(i => i.DeveloperStoryPoints != null).Sum(i => i.DeveloperStoryPoints);
 
         CurrentWorksheet.SetValue(currentRow, projectKeyColumn, projectKey);
         CurrentWorksheet.SetValue(currentRow, participantColumn, participant.Name);

@@ -2,7 +2,11 @@
 
 public static class JiraConstants
 {
-    public const string StoryPointsField = "story points";
+    public const string DeveloperStoryPointsField = "Оценка разработки SP";
+
+    public const string TesterStoryPointsField = "Оценка тестирования SP";
+
+    public const string CommonStoryPointsField = "story points";
     public const string SprintField = "sprint";
 
     #region Статусы задач

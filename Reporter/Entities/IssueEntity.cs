@@ -18,7 +18,7 @@ public class IssueEntity
         Description = issue.Description;
         Status = issue.Status.Name;
         Type = issue.Type.Name;
-        StoryPoints = Int32.TryParse(issue.GetFieldValue(JiraConstants.StoryPointsField), out var points) ? points : null;
+        DeveloperStoryPoints = Int32.TryParse(issue.GetFieldValue(JiraConstants.DeveloperStoryPointsField), out var points) ? points : null;
         Priority = issue.Priority.Name;
         TimeSpentInSeconds = issue.TimeTrackingData?.TimeSpentInSeconds;
         LastAssignee = issue.AssigneeUser != null ? new IssueParticipantEntity(issue.AssigneeUser) : null;
@@ -119,7 +119,11 @@ public class IssueEntity
 
     public DateTime? UpdateDate { get; set;}
 
-    public int? StoryPoints { get; set; }
+    public int? DeveloperStoryPoints { get; set; }
+
+    public int? TesterStoryPoints { get; set; }
+
+    public int? CommonStoryPoints { get; set; }
 
     public string? Priority { get; set; }
 

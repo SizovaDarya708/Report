@@ -82,7 +82,7 @@ public class Kpi8WorksheetHandler : WorksheetExportHandlerBase
         CurrentWorksheet.SetValue(currentRow, authorNameColumn, developersWorks.Key.Name);
 
         var complexIssueCount = developersWorks.Value
-            .Where(x => x.StoryPoints >= 8)
+            .Where(x => x.DeveloperStoryPoints >= 8)
             .Count();
         CurrentWorksheet.SetValue(currentRow, complexIssueCountColumn, complexIssueCount);
 
