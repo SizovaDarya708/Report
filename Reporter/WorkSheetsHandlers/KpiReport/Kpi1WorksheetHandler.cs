@@ -59,6 +59,7 @@ public class Kpi1WorksheetHandler : WorksheetExportHandlerBase
             .Where(i => i.Status.ToLower() == JiraConstants.Closed.ToLower());
 
         //группируем задачи по разработчику
+        //TODO: нельзя просто взять и откинуть в этом KPI всех кто разрабатывал. Важен порядок переводивших в ревью
         foreach (var issue in allIssuesInfo)
         {
             var developer = issue.GetParticipantByType(EmployeeType.Developer);

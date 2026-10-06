@@ -30,11 +30,26 @@ public class JiraClientService : IJiraService
     public async Task<Issue[]> GetIssuesForReportAsync(BaseReportInput input, CancellationToken cancellationToken)
     {
         var jql = input.GetJql();
+        const int pageSize = 1000;
+        int startAt = 0;
+        var allIssues = new List<Issue>();
 
-        var issuePages = await client.Issues.GetIssuesFromJqlAsync(jql, 1000, 0, cancellationToken);
+        while (true)
+        {
+            var searchResult = await client.Issues.GetIssuesFromJqlAsync(jql, pageSize, startAt, cancellationToken);
+            
+            var issues = searchResult ?? Enumerable.Empty<Issue>();
+            allIssues.AddRange(issues);
 
-        var issues = issuePages.ToArray();
-        return issues;
+            if (searchResult == null || searchResult.Count() < pageSize)
+            {
+                break;
+            }
+
+            startAt += pageSize; // переходим к следующей странице
+        }
+
+        return allIssues.ToArray();
     }
 
     public async Task<Dictionary<string, string>> GetUsersDepartmentAsync(string[] userLogins, CancellationToken cancellationToken)
