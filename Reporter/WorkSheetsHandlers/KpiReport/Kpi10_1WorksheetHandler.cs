@@ -25,7 +25,7 @@ public class Kpi10_1WorksheetHandler : WorksheetExportHandlerBase
     private int currentRow = 2;
 
     private int projectKeyColumn = 1;
-    private int authorNameColumn = 2;
+    private int issueColumn = 2;
     private int resolveIssueTimeColumn = 3;
     private int reworkTimeSpentColumn = 4;
     private int issuesWithReworkPercentageColumn = 5;
@@ -63,39 +63,14 @@ public class Kpi10_1WorksheetHandler : WorksheetExportHandlerBase
         //группируем задачи по разработчику
         foreach (var issue in allIssuesInfo)
         {
-            var developer = issue.GetParticipantByType(EmployeeType.Developer);
-
-            if (developer == null)
-            {
-                continue;
-            }
-
-            if (developerPerIssues.ContainsKey(developer))
-            {
-                developerPerIssues[developer].Add(issue);
-            }
-            else
-            {
-                developerPerIssues.Add(developer, new List<IssueEntity> { issue });
-            }
-        }
-
-        foreach (var developer in developerPerIssues)
-        {
-            FillReworksByDeveloper(developer, projectIssues.Key);
+            FillReworks(issue);
         }
     }
 
-    private void FillReworksByDeveloper(KeyValuePair<IssueParticipantEntity, List<IssueEntity>> issuesPerParticipant, string projectKey)
+    private void FillReworks(IssueEntity issue)
     {
-        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, projectKey);
-        CurrentWorksheet.SetValue(currentRow, authorNameColumn, issuesPerParticipant.Key.Name);
-
-        //Посчитать всю работу над задачами по сотруднику
-        //у каждой задачи посчитать списания по видам работ - разработка, ревью, доработка, (анализ?)
-        var allIssueTimeSpent = issuesPerParticipant.Value
-            .SelectMany(issue => issue.Estimates)
-            .Where(estimate => estimate.Worklog.Participant.Name == issuesPerParticipant.Key.Name)
+        //Посчитать всю работу над задачей по разработке(разработка, ревью, доработка)
+        var allIssueTimeSpent = issue.Estimates
             .Where(estimate => estimate.WorkEstimateType != null && DeveloperEstimateTypes.Contains(estimate.WorkEstimateType!.Value))
             .Sum(estimate => estimate.Worklog.TimeSpendInSeconds);
         CurrentWorksheet.SetValue(currentRow, resolveIssueTimeColumn, allIssueTimeSpent/60/60);
@@ -104,17 +79,16 @@ public class Kpi10_1WorksheetHandler : WorksheetExportHandlerBase
         {
             return;
         }
-        
-        //Подсчитать все время на дорботки по задачам
-        long allReworksTimeSpent = 0;
-        foreach (var issue in issuesPerParticipant.Value)
-        {
-            var reworksInfo = issue.GetReworkInfo();
-            allReworksTimeSpent += (reworksInfo.TimeSpendInSeconds ?? 0);                    
-        }
 
-        CurrentWorksheet.SetValue(currentRow, reworkTimeSpentColumn, allReworksTimeSpent/60/60);
-        var reworkPercentage = allReworksTimeSpent == 0 ? allReworksTimeSpent : ((decimal)allReworksTimeSpent / (decimal)allIssueTimeSpent) * 100;
+        CurrentWorksheet.SetValue(currentRow, projectKeyColumn, issue.ProjectKey);
+        CurrentWorksheet.SetValue(currentRow, issueColumn, issue.Key);
+
+        //Подсчитать все время на дорботки по задаче
+        var reworksInfo = issue.GetReworkInfo();
+        var allReworksTimeSpent = reworksInfo.TimeSpendInSeconds != null && reworksInfo.TimeSpendInSeconds != 0 ?
+            reworksInfo.TimeSpendInSeconds / 60 / 60 : 0;
+        CurrentWorksheet.SetValue(currentRow, reworkTimeSpentColumn, allReworksTimeSpent);
+        var reworkPercentage = allReworksTimeSpent == 0 ? (decimal)allReworksTimeSpent : ((decimal)allReworksTimeSpent / (decimal)allIssueTimeSpent) * 100;
         CurrentWorksheet.Cells[currentRow, issuesWithReworkPercentageColumn].Style.Numberformat.Format = "0.#";
         CurrentWorksheet.SetValue(currentRow, issuesWithReworkPercentageColumn, reworkPercentage);
         CurrentWorksheet.Cells[currentRow, periodStartDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.StartDate);
@@ -128,7 +102,7 @@ public class Kpi10_1WorksheetHandler : WorksheetExportHandlerBase
     {
         //Заголовки данных
         CurrentWorksheet.SetValue(headerRow, projectKeyColumn, "Проект");
-        CurrentWorksheet.SetValue(headerRow, authorNameColumn, "Сотрудник");
+        CurrentWorksheet.SetValue(headerRow, issueColumn, "Задача");
         CurrentWorksheet.SetValue(headerRow, resolveIssueTimeColumn, "Время на решение задачи в часах");
         CurrentWorksheet.SetValue(headerRow, reworkTimeSpentColumn, "Время на доработки в часах");
         CurrentWorksheet.SetValue(headerRow, issuesWithReworkPercentageColumn, "Процент времени затраченное на доработки от всего времени задачи");
