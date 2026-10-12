@@ -142,6 +142,16 @@ public class IssueEntity
     //Все участники задачи (автор и исполнители)
     public List<IssueParticipantEntity> Participants { get; set; } = new List<IssueParticipantEntity>();
 
+    public IssueParticipantEntity[] GetParticipantsByType(EmployeeType employeeType)
+    {
+        if (!Participants.Any(x => x.EmployeeType == employeeType))
+        {
+            return [];
+        }
+
+        return Participants.Where(x => x.EmployeeType == employeeType).ToArray();
+    }
+
     public IssueParticipantEntity? GetParticipantByType(EmployeeType employeeType)
     {
         return Participants.FirstOrDefault(x => x.EmployeeType == employeeType);
@@ -157,25 +167,33 @@ public class IssueEntity
 
         //Найти кто переводил задачку в Разработку либо того, кто переводил в статус Ревью
         //- считать этого участника Разработчиком
-        var developer = ChangeLogs
+        var developers = ChangeLogs
             .Where(x => x.Items.Any(i => 
-            (i.FromValue?.ToLower() == JiraConstants.ToWork.ToLower() && i.ToValue?.ToLower() == JiraConstants.Work.ToLower()
-            ||
-            i.FromValue?.ToLower() == JiraConstants.Work.ToLower() && i.ToValue?.ToLower() == JiraConstants.Review.ToLower())))
+            i.FromValue?.ToLower() == JiraConstants.ToWork.ToLower() && i.ToValue?.ToLower() == JiraConstants.Work.ToLower() 
+                    || i.FromValue?.ToLower() == JiraConstants.Work.ToLower() && i.ToValue?.ToLower() == JiraConstants.Review.ToLower()
+            || 
+            i.FromValue?.ToLower() == JiraConstants.ToRework.ToLower() && i.ToValue?.ToLower() == JiraConstants.Rework.ToLower()
+                    || i.FromValue?.ToLower() == JiraConstants.Rework.ToLower() && i.ToValue?.ToLower() == JiraConstants.Review.ToLower()
+            ))
             .Select(x => x.Author)
-            .FirstOrDefault();
-        SetParticipantsByType(EmployeeType.Developer, developer);
-
-        ////Найти кто переводил задачку в оценку качества - считать этого участника Тестировщиком ????
-        //var tester = statusChangedLogs
-        //    .Where(x => x.Items.Any(i => (i.FromValue?.ToLower() == JiraConstants.TestingOnBranch.ToLower() || i.FromValue?.ToLower() == JiraConstants.TestingOnMaster.ToLower())
-        //    && i.ToValue?.ToLower() == JiraConstants.QualityAssessment.ToLower()))
-        //    .Select(x => x.Author)
-        //    .FirstOrDefault();
-        //SetParticipantsByType(EmployeeType.Tester, tester);
+            .ToArray();
+        SetParticipantsByType(EmployeeType.Developer, developers);
     }
 
-    private void SetParticipantsByType(EmployeeType employeeType, IssueParticipantEntity? participant)
+    private void SetParticipantsByType(EmployeeType employeeType, IssueParticipantEntity?[]? participants)
+    {
+        if (participants == null)
+        {
+            return;
+        }
+
+        foreach (var participant in participants)
+        {
+            SetParticipantByType(employeeType, participant);        
+        }
+    }
+
+    private void SetParticipantByType(EmployeeType employeeType, IssueParticipantEntity? participant)
     {
         if (participant == null)
         {
