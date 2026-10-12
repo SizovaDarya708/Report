@@ -1,6 +1,7 @@
 ﻿using OfficeOpenXml;
 using Reporter.Entities;
 using Reporter.Extensions;
+using Reporter.WorkSheetsHandlers.KpiReport.Dtos;
 
 namespace Reporter.WorkSheetsHandlers.SprintReport;
 
@@ -51,31 +52,36 @@ public class Kpi1WorksheetHandler : WorksheetExportHandlerBase
 
     private void FillData(KeyValuePair<string, List<IssueEntity>> projectIssues)
     {
-        var developerPerIssues = new Dictionary<IssueParticipantEntity, List<IssueEntity>>(new IssueParticipantEntityComparer()) {};
-
-        //TODO взять задачи, которые вообще интересуют issuetype in (Инцидент, "New Feature", Bug, Improvement, ошибка)
+        var developerPerIssues = new Dictionary<IssueParticipantEntity, List<ReworkInfoDto>>(new IssueParticipantEntityComparer()) {};
 
         var allIssuesInfo = projectIssues.Value
+            .Where(i => i.Type.ToLower() == JiraConstants.Bug.ToLower() ||
+                i.Type.ToLower() == JiraConstants.Incident.ToLower() ||
+                i.Type.ToLower() == JiraConstants.NewDevelop.ToLower() ||
+                i.Type.ToLower() == JiraConstants.Features.ToLower())
             .Where(i => i.Status.ToLower() == JiraConstants.Closed.ToLower());
 
-        //группируем задачи по разработчику
-        //TODO: нельзя просто взять и откинуть в этом KPI всех кто разрабатывал. Важен порядок переводивших в ревью
         foreach (var issue in allIssuesInfo)
         {
-            var developer = issue.GetParticipantByType(EmployeeType.Developer);
+            var developers = issue.GetParticipantsByType(EmployeeType.Developer);
 
-            if (developer == null)
+            foreach (var developer in developers)
             {
-                continue;
-            }
+                if (developer == null)
+                {
+                    continue;
+                }
 
-            if (developerPerIssues.ContainsKey(developer))
-            {
-                developerPerIssues[developer].Add(issue);
-            }
-            else
-            {
-                developerPerIssues.Add(developer, new List<IssueEntity> { issue });
+                var reworkInfo = new ReworkInfoDto(issue, developer);
+
+                if (developerPerIssues.ContainsKey(developer))
+                {
+                    developerPerIssues[developer].Add(reworkInfo);
+                }
+                else
+                {
+                    developerPerIssues.Add(developer, new List<ReworkInfoDto> { reworkInfo });
+                }
             }
         }
 
@@ -84,31 +90,20 @@ public class Kpi1WorksheetHandler : WorksheetExportHandlerBase
             FillReworksByDeveloper(developer, projectIssues.Key);
         }
     }
-    private void FillReworksByDeveloper(KeyValuePair<IssueParticipantEntity, List<IssueEntity>> developersReworks, string projectKey)
+
+    
+    private void FillReworksByDeveloper(KeyValuePair<IssueParticipantEntity, List<ReworkInfoDto>> developersReworks, string projectKey)
     {
+        var participant = developersReworks.Key;
+        var issues = developersReworks.Value;
+
         CurrentWorksheet.SetValue(currentRow, projectKeyColumn, projectKey);
-        CurrentWorksheet.SetValue(currentRow, authorNameColumn, developersReworks.Key.Name);
-        var allIssueCount = developersReworks.Value.Count;
-        CurrentWorksheet.SetValue(currentRow, issueCountColumn, allIssueCount);
-
-        //Подсчитать все переработки по задачам
-
-        var allReworksCount = 0;
-        foreach (var issue in developersReworks.Value)
-        {
-            var reworksInfo = issue.GetReworkInfo();
-            reworksInfo.ReworksPerParticipantList.TryGetValue(developersReworks.Key, out var issueReworks);
-
-            if (issueReworks == null)
-            {
-                continue;            
-            }
-
-            allReworksCount += 1;                    
-        }
-
-        CurrentWorksheet.SetValue(currentRow, issuesWithReworkCountColumn, allReworksCount);
-        var reworkPercentage = allReworksCount == 0 ? allReworksCount : ((decimal)allReworksCount / (decimal)allIssueCount) * 100;
+        CurrentWorksheet.SetValue(currentRow, authorNameColumn, participant.Name);
+        CurrentWorksheet.SetValue(currentRow, issueCountColumn, issues.Count);
+        
+        var issueWithReworksCount = issues.Where(x => x.HasReworks == true).Count();
+        CurrentWorksheet.SetValue(currentRow, issuesWithReworkCountColumn, issueWithReworksCount);
+        var reworkPercentage = issueWithReworksCount == 0 ? 0 : ((decimal)issueWithReworksCount / (decimal)issues.Count) * 100;
         CurrentWorksheet.Cells[currentRow, issuesWithReworkPercentageColumn].Style.Numberformat.Format = "0.#";
         CurrentWorksheet.SetValue(currentRow, issuesWithReworkPercentageColumn, reworkPercentage);
         CurrentWorksheet.Cells[currentRow, periodStartDateColumn].SetDateTime(_sprintReportEntity.ReportPeriod.StartDate);

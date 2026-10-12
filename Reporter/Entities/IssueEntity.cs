@@ -203,6 +203,34 @@ public class IssueEntity
         Participants.Add(participant);
     }
 
+    /// <summary>
+    /// Получить информацию о переходах по разработчикам
+    /// </summary>
+    public List<ChangeLogEntity> GetDevelopersChangeLogs()
+    {
+        var developerChangeLogs = ChangeLogs
+           .Where(x => x.Items.Any(i => 
+            i.FromValue?.ToLower() == JiraConstants.Work.ToLower() && i.ToValue?.ToLower() == JiraConstants.Review.ToLower()
+           ))
+           .Where(x => x.Author != null)
+           .ToList();
+        return developerChangeLogs;
+    }
+
+    /// <summary>
+    /// Получить информацию о переходах из доработок
+    /// </summary>
+    public List<ChangeLogEntity> GetReworksChangeLogs()
+    {
+        var developerChangeLogs = ChangeLogs
+           .Where(x => x.Items.Any(i =>
+                i.FromValue?.ToLower() == JiraConstants.Rework.ToLower() && i.ToValue?.ToLower() == JiraConstants.Review.ToLower()
+           ))
+           .Where(x => x.Author != null)
+           .ToList();
+        return developerChangeLogs;
+    }
+
     /// <summary> Содержатся данные о переходах из статуса в статус </summary>
     public List<ChangeLogEntity> ChangeLogs { get; set; } = new List<ChangeLogEntity>();
 
